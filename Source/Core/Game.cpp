@@ -11,46 +11,20 @@
 #include <boost/make_shared.hpp>
 #include <SDL.h>
 #include <Core/Game.hpp>
+#include <Core/VideoSubsystem.hpp>
 
 Cosmic::Core::Game::Game() :
     logger(
         boost::log::keywords::severity = Common::Severity::Trace,
         boost::log::keywords::channel = "Game"
     ),
-    m_window(nullptr),
-    m_renderer(nullptr),
     m_gameState(GameState::Startup) {
     BOOST_LOG_FUNCTION();
+    subsystemsManager.request(boost::make_shared<VideoSubsystem>());
     subsystemsManager.initialize();
-
-    //initialize SDL core stuff
-    if (SDL_Init(0) != 0) {
-        BOOST_LOG_SEV(logger, Common::Severity::Critical)
-            << "Failed to initialize SDL library";
-        return;
-    }
-
-    SDL_version version;
-    SDL_GetVersion(&version);
-    BOOST_LOG_SEV(logger, Common::Severity::Debug)
-        << "SDL " << (int)version.major << "." << (int)version.minor << "." << (int)version.patch << " initialized";
-
-    SDL_InitSubSystem(SDL_INIT_VIDEO);
-    SDL_DisableScreenSaver();
-
-    m_window = SDL_CreateWindow("Cosmic River Insanity",
-                                SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-                                800, 600,
-                                SDL_WINDOW_SHOWN);
-    m_renderer = SDL_CreateRenderer(m_window, -1, SDL_RENDERER_ACCELERATED);
 }
 
 Cosmic::Core::Game::~Game() {
-    SDL_DestroyRenderer(m_renderer);
-    SDL_DestroyWindow(m_window);
-    SDL_QuitSubSystem(SDL_INIT_VIDEO);
-    SDL_Quit();
-
     subsystemsManager.uninitialize();
 }
 
@@ -87,8 +61,8 @@ void Cosmic::Core::Game::handleEvent(const SDL_Event& event) {
 }
 
 void Cosmic::Core::Game::processFrame() {
-    SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 255);
-    SDL_RenderClear(m_renderer);
+    //SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 255);
+    //SDL_RenderClear(m_renderer);
 
     switch(m_gameState) {
         case GameState::Running: {
@@ -100,5 +74,5 @@ void Cosmic::Core::Game::processFrame() {
         }
     }
 
-    SDL_RenderPresent(m_renderer);
+    //SDL_RenderPresent(m_renderer);
 }
