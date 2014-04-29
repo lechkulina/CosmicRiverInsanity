@@ -9,6 +9,10 @@
 #include <Core/VideoSubsystem.hpp>
 
 Cosmic::Core::VideoSubsystem::VideoSubsystem() :
+    logger(
+        boost::log::keywords::severity = Common::Severity::Trace,
+        boost::log::keywords::channel = Common::Channel::Subsystem
+    ),
     window(nullptr),
     renderer(nullptr) {
 }

@@ -33,9 +33,9 @@ namespace Core {
             int execute();
 
         private:
-            boost::log::sources::severity_channel_logger<Common::Severity, std::string> logger;
+            Common::Logger logger;
             SubsystemsManager subsystemsManager;
-            GameState m_gameState;
+            GameState gameState;
 
             void handleEvent(const SDL_Event& event);
             void processFrame();

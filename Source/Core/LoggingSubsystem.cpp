@@ -13,7 +13,6 @@
 #include <boost/log/utility/manipulators.hpp>
 #include <boost/log/support/date_time.hpp>
 #include <boost/date_time/time.hpp>
-#include <Common/Logging.hpp>
 #include <Core/LoggingSubsystem.hpp>
 
 Cosmic::Core::LoggingSubsystem::LoggingSubsystem() :

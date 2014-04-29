@@ -9,6 +9,7 @@
 #ifndef LOGGINGSUBSYSTEM_HPP_
 #define LOGGINGSUBSYSTEM_HPP_
 
+#include <Common/Logging.hpp>
 #include <Core/AbstractSubsystem.hpp>
 
 namespace Cosmic {

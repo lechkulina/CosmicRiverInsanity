@@ -28,7 +28,7 @@ namespace Core {
             virtual bool isInitialized() const;
 
         private:
-            boost::log::sources::severity_channel_logger<Common::Severity, std::string> logger;
+            Common::Logger logger;
             SDL_Window* window;
             SDL_Renderer* renderer;
     };

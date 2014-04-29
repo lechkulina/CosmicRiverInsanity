@@ -34,7 +34,7 @@ namespace Core {
             typedef std::list<boost::shared_ptr<AbstractSubsystem> > SubsystemsList;
             typedef SubsystemsList::iterator SubsystemsIterator;
 
-            boost::log::sources::severity_channel_logger<Common::Severity, std::string> logger;
+            Common::Logger logger;
             SubsystemsList pendingSubsystems;
     };
 }

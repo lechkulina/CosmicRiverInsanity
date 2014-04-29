@@ -9,7 +9,11 @@
 #include <Core/SubsystemsManager.hpp>
 #include <Core/LoggingSubsystem.hpp>
 
-Cosmic::Core::SubsystemsManager::SubsystemsManager() {
+Cosmic::Core::SubsystemsManager::SubsystemsManager() :
+    logger(
+        boost::log::keywords::severity = Common::Severity::Trace,
+        boost::log::keywords::channel = Common::Channel::Subsystem
+    ) {
     //push the most essential subsystems here
     pendingSubsystems.push_back(boost::make_shared<LoggingSubsystem>());
 }

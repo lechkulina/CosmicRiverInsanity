@@ -9,14 +9,9 @@
 #ifndef LOGGING_HPP_
 #define LOGGING_HPP_
 
-#include <assert.h>
 #include <boost/log/common.hpp>
 #include <boost/log/sinks.hpp>
-#include <boost/log/expressions.hpp>
-#include <boost/log/attributes.hpp>
 #include <boost/log/utility/manipulators.hpp>
-#include <boost/log/support/date_time.hpp>
-#include <boost/date_time/time.hpp>
 
 namespace Cosmic {
 
@@ -30,7 +25,15 @@ namespace Common {
         Critical
     };
 
+    enum class Channel : int {
+        Game,
+        Subsystem
+    };
+
     BOOST_LOG_ATTRIBUTE_KEYWORD(severity, "Severity", Severity)
+    BOOST_LOG_ATTRIBUTE_KEYWORD(channel, "Channel", Channel)
+
+    typedef boost::log::sources::severity_channel_logger<Severity, Channel> Logger;
 
     template<class CharT>
     boost::log::basic_formatting_ostream<CharT>&
@@ -47,6 +50,19 @@ namespace Common {
                 return stream << "Error";
             case Severity::Critical:
                 return stream << "Critical";
+        }
+        return stream << "Unknown";
+    }
+
+    template<class CharT>
+    boost::log::basic_formatting_ostream<CharT>&
+    operator<<(boost::log::basic_formatting_ostream<CharT>& stream,
+               const boost::log::to_log_manip<Channel, tag::channel>& manip) {
+        switch(manip.get()) {
+            case Channel::Game:
+                return stream << "Game";
+            case Channel::Subsystem:
+                return stream << "Subsystem";
         }
         return stream << "Unknown";
     }

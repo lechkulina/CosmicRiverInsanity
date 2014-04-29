@@ -11,14 +11,13 @@
 #include <boost/make_shared.hpp>
 #include <SDL.h>
 #include <Core/Game.hpp>
-#include <Core/VideoSubsystem.hpp>
 
 Cosmic::Core::Game::Game() :
     logger(
         boost::log::keywords::severity = Common::Severity::Trace,
-        boost::log::keywords::channel = "Game"
+        boost::log::keywords::channel = Common::Channel::Game
     ),
-    m_gameState(GameState::Startup) {
+    gameState(GameState::Startup) {
     BOOST_LOG_FUNCTION();
     subsystemsManager.request(boost::make_shared<VideoSubsystem>());
     subsystemsManager.initialize();
@@ -30,11 +29,11 @@ Cosmic::Core::Game::~Game() {
 
 int Cosmic::Core::Game::execute() {
     BOOST_LOG_FUNCTION();
-    m_gameState = GameState::Running;
+    gameState = GameState::Running;
 
     BOOST_LOG_SEV(logger, Common::Severity::Trace) << "Starting main loop";
 
-    while(m_gameState != GameState::Shutdown) {
+    while(gameState != GameState::Shutdown) {
         SDL_Event event;
         if (SDL_PollEvent(&event) > 0) {
             handleEvent(event);
@@ -49,12 +48,12 @@ int Cosmic::Core::Game::execute() {
 void Cosmic::Core::Game::handleEvent(const SDL_Event& event) {
     switch(event.type) {
         case SDL_QUIT: {
-            m_gameState = GameState::Shutdown;
+            gameState = GameState::Shutdown;
         } break;
 
         case SDL_KEYDOWN: {
             if (event.key.keysym.sym == SDLK_ESCAPE) {
-                m_gameState = GameState::Shutdown;
+                gameState = GameState::Shutdown;
             }
         } break;
     }
@@ -64,7 +63,7 @@ void Cosmic::Core::Game::processFrame() {
     //SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 255);
     //SDL_RenderClear(m_renderer);
 
-    switch(m_gameState) {
+    switch(gameState) {
         case GameState::Running: {
 
         } break;
