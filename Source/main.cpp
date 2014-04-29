@@ -1,9 +1,9 @@
 /*
  * main.cpp
  *
- *  Created on: 20 kwi 2014
- *  Author: Lech Kulina
- *  E-Mail: kulinalech@gmail.com
+ * Created on: 20 kwi 2014
+ * Author: Lech Kulina
+ * E-Mail: kulinalech@gmail.com
  */
 
 #include <Common/Common.hpp>

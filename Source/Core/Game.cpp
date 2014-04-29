@@ -12,42 +12,27 @@
 #include <SDL.h>
 #include <Core/Game.hpp>
 
-typedef boost::log::sinks::text_file_backend TextFileBackend;
-typedef boost::log::sinks::synchronous_sink<TextFileBackend> SynchronousTextFileSink;
-
 Cosmic::Core::Game::Game() :
+    logger(
+        boost::log::keywords::severity = Common::Severity::Trace,
+        boost::log::keywords::channel = "Game"
+    ),
     m_window(nullptr),
     m_renderer(nullptr),
     m_gameState(GameState::Startup) {
 
-    //add global and thread specific attributes
-    boost::shared_ptr<boost::log::core> core = boost::log::core::get();
-    core->add_global_attribute("TimeStamp", boost::log::attributes::local_clock());
-
-    //create log sink before we start logging
-    boost::shared_ptr<TextFileBackend> backend = boost::make_shared<TextFileBackend>(
-        boost::log::keywords::file_name = "game.log",
-        boost::log::keywords::rotation_size = 5 * 1024 * 1024
-    );
-    backend->auto_flush(true);
-
-    boost::shared_ptr<SynchronousTextFileSink> sink = boost::make_shared<SynchronousTextFileSink>(backend);
-    sink->set_formatter(
-        boost::log::expressions::stream
-            << "<" << boost::log::trivial::severity << "> "
-            << boost::log::expressions::smessage
-    );
-    core->add_sink(sink);
 
     //initialize SDL core stuff
+    BOOST_LOG_NAMED_SCOPE("Initialization");
     if (SDL_Init(0) != 0) {
-        BOOST_LOG_SEV(logger, SeverityLevel::Fatal) << "Failed to initialize SDL library";
+        BOOST_LOG_SEV(logger, Common::Severity::Critical)
+            << "Failed to initialize SDL library";
         return;
     }
 
     SDL_version version;
     SDL_GetVersion(&version);
-    BOOST_LOG_SEV(logger, SeverityLevel::Debug)
+    BOOST_LOG_SEV(logger, Common::Severity::Debug)
         << "SDL " << (int)version.major << "." << (int)version.minor << "." << (int)version.patch << " initialized";
 
     SDL_InitSubSystem(SDL_INIT_VIDEO);
@@ -68,7 +53,10 @@ Cosmic::Core::Game::~Game() {
 }
 
 int Cosmic::Core::Game::execute() {
+    BOOST_LOG_FUNCTION();
     m_gameState = GameState::Running;
+
+    BOOST_LOG_SEV(logger, Common::Severity::Trace) << "Starting main loop";
 
     while(m_gameState != GameState::Shutdown) {
         SDL_Event event;

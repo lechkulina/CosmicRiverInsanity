@@ -9,13 +9,8 @@
 #ifndef GAME_HPP_
 #define GAME_HPP_
 
-#include <fstream>
-#include <boost/log/common.hpp>
-#include <boost/log/trivial.hpp>
-#include <boost/log/sinks.hpp>
-#include <boost/log/expressions.hpp>
-#include <boost/log/attributes.hpp>
 #include <SDL.h>
+#include <Common/Logging.hpp>
 
 namespace Cosmic {
 
@@ -29,17 +24,6 @@ namespace Core {
         Shutdown
     };
 
-    enum SeverityLevel : int {
-        Trace,
-        Debug,
-        Info,
-        Warning,
-        Error,
-        Fatal
-    };
-
-    typedef boost::log::sources::severity_logger<SeverityLevel> SeverityLogger;
-
     class Game {
         public:
             Game();
@@ -48,7 +32,7 @@ namespace Core {
             int execute();
 
         private:
-            SeverityLogger logger;
+            boost::log::sources::severity_channel_logger<Common::Severity, std::string> logger;
             SDL_Window* m_window;
             SDL_Renderer* m_renderer;
             GameState m_gameState;
