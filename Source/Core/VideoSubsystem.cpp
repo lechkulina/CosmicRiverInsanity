@@ -46,6 +46,7 @@ void Cosmic::Core::VideoSubsystem::initialize(){
     if (SDL_InitSubSystem(SDL_INIT_VIDEO) != 0) {
         BOOST_LOG_SEV(logger, Common::Severity::Critical)
             << "Failed to initialize SDL Video subsystem. " << SDL_GetError();
+        SDL_Quit();
         return;
     }
     SDL_DisableScreenSaver();
@@ -55,6 +56,8 @@ void Cosmic::Core::VideoSubsystem::initialize(){
                                     800, 600, SDL_WINDOW_SHOWN)) == nullptr) {
         BOOST_LOG_SEV(logger, Common::Severity::Critical)
             << "Failed to create window. " << SDL_GetError();
+        SDL_EnableScreenSaver();
+        SDL_Quit();
         return;
     }
 
@@ -62,6 +65,9 @@ void Cosmic::Core::VideoSubsystem::initialize(){
     if ((renderer = SDL_CreateRenderer(window, -1, SDL_RENDERER_ACCELERATED)) == nullptr) {
         BOOST_LOG_SEV(logger, Common::Severity::Critical)
             << "Failed to create renderer. " << SDL_GetError();
+        SDL_DestroyWindow(window);
+        SDL_EnableScreenSaver();
+        SDL_Quit();
         return;
     }
 }
@@ -78,7 +84,6 @@ void Cosmic::Core::VideoSubsystem::uninitialize() {
         << "Uninitializing video subsystem and SDL library";
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
-    SDL_QuitSubSystem(SDL_INIT_VIDEO);
     SDL_Quit();
 }
 
