@@ -9,6 +9,7 @@
 #ifndef LOGGING_HPP_
 #define LOGGING_HPP_
 
+#include <assert.h>
 #include <boost/log/common.hpp>
 #include <boost/log/sinks.hpp>
 #include <boost/log/expressions.hpp>

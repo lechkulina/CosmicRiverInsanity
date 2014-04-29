@@ -20,10 +20,10 @@ Cosmic::Core::Game::Game() :
     m_window(nullptr),
     m_renderer(nullptr),
     m_gameState(GameState::Startup) {
-
+    BOOST_LOG_FUNCTION();
+    subsystemsManager.initialize();
 
     //initialize SDL core stuff
-    BOOST_LOG_NAMED_SCOPE("Initialization");
     if (SDL_Init(0) != 0) {
         BOOST_LOG_SEV(logger, Common::Severity::Critical)
             << "Failed to initialize SDL library";
@@ -50,6 +50,8 @@ Cosmic::Core::Game::~Game() {
     SDL_DestroyWindow(m_window);
     SDL_QuitSubSystem(SDL_INIT_VIDEO);
     SDL_Quit();
+
+    subsystemsManager.uninitialize();
 }
 
 int Cosmic::Core::Game::execute() {
