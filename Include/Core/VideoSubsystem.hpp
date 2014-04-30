@@ -29,6 +29,7 @@ namespace Core {
 
         private:
             Common::Logger logger;
+            SDL_bool restoreScreenSaver;
             SDL_Window* window;
             SDL_Renderer* renderer;
     };

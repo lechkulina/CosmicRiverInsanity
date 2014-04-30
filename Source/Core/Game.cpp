@@ -11,6 +11,7 @@
 #include <boost/make_shared.hpp>
 #include <SDL.h>
 #include <Core/Game.hpp>
+#include <Core/VideoSubsystem.hpp>
 
 Cosmic::Core::Game::Game() :
     logger(
