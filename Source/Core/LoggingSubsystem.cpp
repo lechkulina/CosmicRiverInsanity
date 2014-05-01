@@ -53,5 +53,5 @@ Cosmic::Core::LoggingSubsystem::~LoggingSubsystem() {
 }
 
 bool Cosmic::Core::LoggingSubsystem::isInitialized() const {
-    return sink;
+    return sink.use_count() > 0;
 }
