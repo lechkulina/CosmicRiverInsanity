@@ -15,7 +15,7 @@ namespace Core {
 
     class AbstractContext {
         public:
-            virtual ~AbstractContext();
+            virtual ~AbstractContext() {}
 
             virtual bool isReady() const =0;
     };
