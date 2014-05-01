@@ -10,21 +10,22 @@
 #include <boost/make_shared.hpp>
 #include <SDL.h>
 #include <Core/Game.hpp>
+#include <Core/LoggingSubsystem.hpp>
 #include <Core/VideoSubsystem.hpp>
 
 Cosmic::Core::Game::Game() :
     logger(
         boost::log::keywords::severity = Common::Severity::Trace,
-        boost::log::keywords::channel = Common::Channel::Game
-    ),
+        boost::log::keywords::channel = Common::Channel::Game),
     gameState(GameState::Startup) {
     BOOST_LOG_FUNCTION();
-    subsystemsManager.request(boost::make_shared<VideoSubsystem>());
-    subsystemsManager.initialize();
+
+    //create and initialize all required subsystems
+    composedSubsystem.compose(boost::make_shared<LoggingSubsystem>());
+    composedSubsystem.compose(boost::make_shared<VideoSubsystem>());
 }
 
 Cosmic::Core::Game::~Game() {
-    subsystemsManager.uninitialize();
 }
 
 int Cosmic::Core::Game::execute() {

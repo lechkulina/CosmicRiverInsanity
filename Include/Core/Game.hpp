@@ -11,7 +11,7 @@
 
 #include <SDL.h>
 #include <Common/Logging.hpp>
-#include <Core/SubsystemsManager.hpp>
+#include <Core/ComposedSubsystem.hpp>
 
 namespace Cosmic {
 
@@ -34,7 +34,7 @@ namespace Core {
 
         private:
             Common::Logger logger;
-            SubsystemsManager subsystemsManager;
+            ComposedSubsystem composedSubsystem;
             GameState gameState;
 
             void handleEvent(const SDL_Event& event);
