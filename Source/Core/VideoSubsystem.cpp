@@ -24,6 +24,7 @@ Cosmic::Core::VideoSubsystem::~VideoSubsystem() {
 
 void Cosmic::Core::VideoSubsystem::initialize(){
     BOOST_LOG_FUNCTION();
+
     if (isInitialized()) {
         BOOST_LOG_SEV(logger, Common::Severity::Debug)
             << "Video subsystem has already been initialized.";
@@ -39,6 +40,7 @@ void Cosmic::Core::VideoSubsystem::initialize(){
         return;
     }
     SDL_version version;
+    memset(&version, 0, sizeof(SDL_version));
     SDL_GetVersion(&version);
     BOOST_LOG_SEV(logger, Common::Severity::Debug)
         << "SDL " << int(version.major) << "." << int(version.minor) << "." << int(version.patch) << " initialized";
@@ -71,8 +73,23 @@ void Cosmic::Core::VideoSubsystem::initialize(){
             << "Failed to create renderer. " << SDL_GetError();
         SDL_DestroyWindow(window);
         SDL_Quit();
+        window = nullptr;
         return;
     }
+    SDL_RendererInfo rendererInfo;
+    memset(&rendererInfo, 0, sizeof(SDL_RendererInfo));
+    if (SDL_GetRendererInfo(renderer, &rendererInfo) != 0) {
+        BOOST_LOG_SEV(logger, Common::Severity::Critical)
+            << "Failed to get renderer information" << SDL_GetError();
+        SDL_DestroyRenderer(renderer);
+        SDL_DestroyWindow(window);
+        SDL_Quit();
+        renderer = nullptr;
+        window = nullptr;
+        return;
+    }
+    BOOST_LOG_SEV(logger, Common::Severity::Debug)
+        << "Renderer " << rendererInfo.name << " created.";
 
     //disable screen saver and hide cursor
     restoreScreenSaver = SDL_IsScreenSaverEnabled();
@@ -82,31 +99,25 @@ void Cosmic::Core::VideoSubsystem::initialize(){
 
 void Cosmic::Core::VideoSubsystem::uninitialize() {
     BOOST_LOG_FUNCTION();
+
     if (!isInitialized()) {
         BOOST_LOG_SEV(logger, Common::Severity::Debug)
             << "Video subsystem has already been uninitialized";
         return;
     }
 
+    //restore screen saver state, destroy renderer, window and quit all SDL subsystems
     BOOST_LOG_SEV(logger, Common::Severity::Trace)
         << "Uninitializing video subsystem and SDL library.";
-
-    //restore screen saver state
     if (restoreScreenSaver == SDL_TRUE) {
         SDL_DisableScreenSaver();
-        restoreScreenSaver = SDL_FALSE;
     }
-
-    //destroy renderer
     SDL_DestroyRenderer(renderer);
-    renderer = nullptr;
-
-    //destroy window
     SDL_DestroyWindow(window);
-    window = nullptr;
-
-    //this will uninitialize all currently initialized SDL subsystems !
     SDL_Quit();
+    restoreScreenSaver = SDL_FALSE;
+    renderer = nullptr;
+    window = nullptr;
 }
 
 bool Cosmic::Core::VideoSubsystem::isInitialized() const {

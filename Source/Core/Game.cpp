@@ -6,7 +6,6 @@
  * E-Mail: kulinalech@gmail.com
  */
 
-#include <fstream>
 #include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
 #include <SDL.h>
