@@ -22,16 +22,12 @@ namespace Core {
             VideoSubsystem();
             virtual ~VideoSubsystem();
 
-            virtual void initialize();
-            virtual void uninitialize();
-
             virtual bool isInitialized() const;
 
         private:
             Common::Logger logger;
+            SDL_version version;
             SDL_bool restoreScreenSaver;
-            SDL_Window* window;
-            SDL_Renderer* renderer;
     };
 
 }

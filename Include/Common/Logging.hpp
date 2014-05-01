@@ -27,7 +27,8 @@ namespace Common {
 
     enum class Channel : int {
         Game,
-        Subsystem
+        Subsystem,
+        Context
     };
 
     BOOST_LOG_ATTRIBUTE_KEYWORD(severity, "Severity", Severity)
@@ -63,6 +64,8 @@ namespace Common {
                 return stream << "Game";
             case Channel::Subsystem:
                 return stream << "Subsystem";
+            case Channel::Context:
+                return stream << "Context";
         }
         return stream << "Unknown";
     }

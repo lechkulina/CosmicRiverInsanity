@@ -9,6 +9,9 @@
 #ifndef LOGGINGSUBSYSTEM_HPP_
 #define LOGGINGSUBSYSTEM_HPP_
 
+#include <boost/shared_ptr.hpp>
+#include <boost/log/common.hpp>
+#include <boost/log/sinks.hpp>
 #include <Common/Logging.hpp>
 #include <Core/AbstractSubsystem.hpp>
 
@@ -21,13 +24,15 @@ namespace Core {
             LoggingSubsystem();
             virtual ~LoggingSubsystem();
 
-            virtual void initialize();
-            virtual void uninitialize();
-
             virtual bool isInitialized() const;
 
         private:
-            bool initialized;
+            typedef boost::log::core Core;
+            typedef boost::log::sinks::text_file_backend TextFileBackend;
+            typedef boost::log::sinks::synchronous_sink<TextFileBackend> SynchronousSink;
+
+            boost::shared_ptr<Core> core;
+            boost::shared_ptr<SynchronousSink> sink;
     };
 
 }

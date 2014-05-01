@@ -17,9 +17,6 @@ namespace Core {
         public:
             virtual ~AbstractSubsystem() {}
 
-            virtual void initialize() =0;
-            virtual void uninitialize() =0;
-
             virtual bool isInitialized() const =0;
     };
 
