@@ -9,9 +9,11 @@
 #ifndef GAME_HPP_
 #define GAME_HPP_
 
+#include <boost/shared_ptr.hpp>
 #include <SDL.h>
 #include <Common/Logging.hpp>
 #include <Core/ComposedSubsystem.hpp>
+#include <Core/VideoContext.hpp>
 
 namespace Cosmic {
 
@@ -35,6 +37,7 @@ namespace Core {
         private:
             Common::Logger logger;
             ComposedSubsystem composedSubsystem;
+            boost::shared_ptr<VideoContext> videoContext;
             GameState gameState;
 
             void handleEvent(const SDL_Event& event);

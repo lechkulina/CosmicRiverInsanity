@@ -6,7 +6,6 @@
  * E-Mail: kulinalech@gmail.com
  */
 
-#include <boost/shared_ptr.hpp>
 #include <boost/make_shared.hpp>
 #include <SDL.h>
 #include <Core/Game.hpp>
@@ -20,9 +19,23 @@ Cosmic::Core::Game::Game() :
     gameState(GameState::Startup) {
     BOOST_LOG_FUNCTION();
 
-    //create and initialize all required subsystems
+    //initialize all required subsystems
+    BOOST_LOG(logger) << "Creating and initializing all required subsystems.";
     composedSubsystem.compose(boost::make_shared<LoggingSubsystem>());
     composedSubsystem.compose(boost::make_shared<VideoSubsystem>());
+    if (!composedSubsystem.isInitialized()) {
+        BOOST_LOG_SEV(logger, Common::Severity::Critical)
+            << "Failed to initialize required subsystems.";
+        return;
+    }
+
+    //create video context
+    videoContext = boost::make_shared<VideoContext>();
+    if (!videoContext->isReady()) {
+        BOOST_LOG_SEV(logger, Common::Severity::Critical)
+            << "Failed to create video context.";
+        return;
+    }
 }
 
 Cosmic::Core::Game::~Game() {
