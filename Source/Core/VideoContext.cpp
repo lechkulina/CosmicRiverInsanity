@@ -78,4 +78,24 @@ bool Cosmic::Core::VideoContext::isReady() const {
     return window != nullptr && renderer != nullptr;
 }
 
+void Cosmic::Core::VideoContext::setDrawColor(const Common::Color& color /*= Common::Color::Black*/) {
+    BOOST_LOG_FUNCTION();
 
+    if (SDL_SetRenderDrawColor(renderer, color.red, color.green, color.blue, color.alpha) != 0) {
+        BOOST_LOG_SEV(logger, Common::Severity::Error)
+            << "Failed to set draw color. " << SDL_GetError();
+    }
+}
+
+void Cosmic::Core::VideoContext::clear() {
+    BOOST_LOG_FUNCTION();
+
+    if (SDL_RenderClear(renderer) != 0) {
+        BOOST_LOG_SEV(logger, Common::Severity::Error)
+            << "Failed to clear the rendering target. " << SDL_GetError();
+    }
+}
+
+void Cosmic::Core::VideoContext::present() {
+    SDL_RenderPresent(renderer);
+}

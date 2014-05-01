@@ -20,7 +20,6 @@ Cosmic::Core::Game::Game() :
     BOOST_LOG_FUNCTION();
 
     //initialize all required subsystems
-    BOOST_LOG(logger) << "Creating and initializing all required subsystems.";
     composedSubsystem.compose(boost::make_shared<LoggingSubsystem>());
     composedSubsystem.compose(boost::make_shared<VideoSubsystem>());
     if (!composedSubsystem.isInitialized()) {
@@ -74,8 +73,8 @@ void Cosmic::Core::Game::handleEvent(const SDL_Event& event) {
 }
 
 void Cosmic::Core::Game::processFrame() {
-    //SDL_SetRenderDrawColor(m_renderer, 0, 0, 0, 255);
-    //SDL_RenderClear(m_renderer);
+    videoContext->setDrawColor();
+    videoContext->clear();
 
     switch(gameState) {
         case GameState::Running: {
@@ -87,5 +86,5 @@ void Cosmic::Core::Game::processFrame() {
         }
     }
 
-    //SDL_RenderPresent(m_renderer);
+    videoContext->present();
 }

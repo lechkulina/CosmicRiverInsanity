@@ -11,6 +11,7 @@
 
 #include <SDL.h>
 #include <Common/Logging.hpp>
+#include <Common/Color.hpp>
 #include <Core/AbstractContext.hpp>
 
 namespace Cosmic {
@@ -23,6 +24,10 @@ namespace Core {
             virtual ~VideoContext();
 
             virtual bool isReady() const;
+
+            virtual void setDrawColor(const Common::Color& color = Common::Color::Black);
+            virtual void clear();
+            virtual void present();
 
         private:
             Common::Logger logger;
