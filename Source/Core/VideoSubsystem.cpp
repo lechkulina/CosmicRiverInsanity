@@ -110,7 +110,7 @@ void Cosmic::Core::VideoSubsystem::uninitialize() {
     BOOST_LOG_SEV(logger, Common::Severity::Trace)
         << "Uninitializing video subsystem and SDL library.";
     if (restoreScreenSaver == SDL_TRUE) {
-        SDL_DisableScreenSaver();
+        SDL_EnableScreenSaver();
     }
     SDL_DestroyRenderer(renderer);
     SDL_DestroyWindow(window);
