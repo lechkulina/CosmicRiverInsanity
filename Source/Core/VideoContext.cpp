@@ -99,3 +99,7 @@ void Cosmic::Core::VideoContext::clear() {
 void Cosmic::Core::VideoContext::present() {
     SDL_RenderPresent(renderer);
 }
+
+Cosmic::Core::VideoContext::operator SDL_Renderer*() {
+    return renderer;
+}

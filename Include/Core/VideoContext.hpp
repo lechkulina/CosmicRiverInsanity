@@ -29,6 +29,8 @@ namespace Core {
             virtual void clear();
             virtual void present();
 
+            operator SDL_Renderer*();
+
         private:
             Common::Logger logger;
             SDL_Window* window;
