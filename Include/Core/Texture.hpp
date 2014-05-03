@@ -26,8 +26,11 @@ namespace Core {
 
             virtual bool isLoaded() const;
 
-            virtual void copy(boost::shared_ptr<VideoContext> videoContext, int x, int y);
-            virtual void copyRotated(boost::shared_ptr<VideoContext> videoContext, int x, int y, double angle);
+            int getWidth() const;
+            int getHeight() const;
+
+            void copy(boost::shared_ptr<VideoContext> videoContext, int x, int y);
+            void copyRotated(boost::shared_ptr<VideoContext> videoContext, int x, int y, double angle);
 
             operator SDL_Texture*();
 

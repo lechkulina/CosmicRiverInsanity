@@ -63,6 +63,14 @@ bool Cosmic::Core::Texture::isLoaded() const {
     return texture != nullptr;
 }
 
+int Cosmic::Core::Texture::getWidth() const {
+    return width;
+}
+
+int Cosmic::Core::Texture::getHeight() const {
+    return height;
+}
+
 void Cosmic::Core::Texture::copy(boost::shared_ptr<VideoContext> videoContext, int x, int y) {
     BOOST_LOG_FUNCTION();
 
