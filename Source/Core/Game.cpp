@@ -6,8 +6,8 @@
  * E-Mail: kulinalech@gmail.com
  */
 
-#include <boost/make_shared.hpp>
 #include <SDL.h>
+#include <boost/make_shared.hpp>
 #include <Core/Game.hpp>
 #include <Core/LoggingSubsystem.hpp>
 #include <Core/VideoSubsystem.hpp>
@@ -37,6 +37,9 @@ Cosmic::Core::Game::Game() :
             << "Failed to create video context.";
         return;
     }
+
+    texture = boost::make_shared<Texture>(videoContext, "./playerShip1_green.png");
+    spacecraft = boost::make_shared<Cosmic::Game::Spacecraft>(texture);
 }
 
 Cosmic::Core::Game::~Game() {
@@ -44,43 +47,91 @@ Cosmic::Core::Game::~Game() {
 
 int Cosmic::Core::Game::execute() {
     BOOST_LOG_FUNCTION();
+
+    BOOST_LOG(logger) << "Start main loop";
     gameState = GameState::Running;
 
-    BOOST_LOG_SEV(logger, Common::Severity::Trace) << "Starting main loop";
+    const float fps = 60.0f;
+    const float deltaTime = (1 / fps) * 1000;
+    const float maxAccumulatedTime = 50.0f;
+    float accumulatedTime = 0.0f;
+    float startTime = SDL_GetTicks();
 
     while(gameState != GameState::Shutdown) {
         SDL_Event event;
         if (SDL_PollEvent(&event) > 0) {
             handleEvent(event);
         } else {
-            processFrame();
+            //avoid spiral of death
+            const float currentTime = SDL_GetTicks();
+            accumulatedTime += currentTime - startTime;
+            if (accumulatedTime > maxAccumulatedTime) {
+                accumulatedTime = maxAccumulatedTime;
+            }
+            startTime = currentTime;
+
+            while(accumulatedTime > deltaTime) {
+                updateFrame(deltaTime);
+                accumulatedTime -= deltaTime;
+            }
+
+            renderFrame();
+            resetFrame();
         }
     }
 
+    BOOST_LOG(logger) << "Stop main loop";
     return EXIT_SUCCESS;
 }
 
 void Cosmic::Core::Game::handleEvent(const SDL_Event& event) {
+    const float mag = 0.02;
     switch(event.type) {
         case SDL_QUIT: {
             gameState = GameState::Shutdown;
         } break;
 
         case SDL_KEYDOWN: {
-            if (event.key.keysym.sym == SDLK_ESCAPE) {
-                gameState = GameState::Shutdown;
+            switch(event.key.keysym.sym) {
+                case SDLK_ESCAPE: {
+                    gameState = GameState::Shutdown;
+                } break;
+                case SDLK_RIGHT: {
+                    spacecraft->setLeftEngineThrust(0.0);
+                    spacecraft->setRightEngineThrust(-mag);
+                } break;
+                case SDLK_LEFT: {
+                    spacecraft->setLeftEngineThrust(-mag);
+                    spacecraft->setRightEngineThrust(0.0);
+                } break;
+                case SDLK_UP: {
+                    spacecraft->setLeftEngineThrust(mag);
+                    spacecraft->setRightEngineThrust(mag);
+                } break;
+                case SDLK_DOWN: {
+                    spacecraft->setLeftEngineThrust(-mag);
+                    spacecraft->setRightEngineThrust(-mag);
+                } break;
+                case SDLK_SPACE: {
+                    spacecraft->setLeftEngineThrust(0.0f);
+                    spacecraft->setRightEngineThrust(0.0f);
+                } break;
             }
         } break;
     }
 }
 
-void Cosmic::Core::Game::processFrame() {
+void Cosmic::Core::Game::updateFrame(float deltaTime) {
+    spacecraft->update(deltaTime);
+}
+
+void Cosmic::Core::Game::renderFrame() {
     videoContext->setDrawColor();
     videoContext->clear();
 
     switch(gameState) {
         case GameState::Running: {
-
+            spacecraft->render(videoContext);
         } break;
 
         default: {
@@ -89,4 +140,8 @@ void Cosmic::Core::Game::processFrame() {
     }
 
     videoContext->present();
+}
+
+void Cosmic::Core::Game::resetFrame() {
+    spacecraft->reset();
 }

@@ -14,6 +14,8 @@
 #include <Common/Logging.hpp>
 #include <Core/ComposedSubsystem.hpp>
 #include <Core/VideoContext.hpp>
+#include <Core/Texture.hpp>
+#include <Game/Spacecraft.hpp>
 
 namespace Cosmic {
 
@@ -40,8 +42,13 @@ namespace Core {
             boost::shared_ptr<VideoContext> videoContext;
             GameState gameState;
 
+            boost::shared_ptr<Texture> texture;
+            boost::shared_ptr<Cosmic::Game::Spacecraft> spacecraft;
+
             void handleEvent(const SDL_Event& event);
-            void processFrame();
+            void updateFrame(float deltaTime);
+            void renderFrame();
+            void resetFrame();
     };
 
 }
