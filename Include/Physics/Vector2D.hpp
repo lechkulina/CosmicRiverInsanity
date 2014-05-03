@@ -26,14 +26,20 @@ namespace Physics {
             Vector2D(const A& x, const A& y);
 
             template<class A>
-            Vector2D(Vector2D<A>& s);
+            Vector2D(Vector2D<A>& vector);
+
+            template<class A>
+            Vector2D<T>& operator=(const Vector2D<A>& rhs);
 
             Vector2D<T> operator+(const Vector2D<T>& rhs) const;
             const Vector2D<T>& operator+=(const Vector2D<T>& rhs);
+
             Vector2D<T> operator-(const Vector2D<T>& rhs) const;
             const Vector2D<T>& operator-=(const Vector2D<T>& rhs);
+
             Vector2D<T> operator*(const T& rhs) const;
             const Vector2D<T>& operator*=(const T& rhs);
+
             Vector2D<T> operator/(const T& rhs) const;
             const Vector2D<T>& operator/=(const T& rhs);
 
@@ -47,15 +53,29 @@ namespace Physics {
     };
 
     template<class T>
-    Vector2D<T>::Vector2D(): x(0), y(0) {}
+    Vector2D<T>::Vector2D():
+        x(0), y(0) {
+    }
 
     template<class T>
     template<class A>
-    Vector2D<T>::Vector2D(const A& x, const A& y) : x(x), y(y) {}
+    Vector2D<T>::Vector2D(const A& x, const A& y) :
+        x(x), y(y) {
+    }
 
     template<class T>
     template<class A>
-    Vector2D<T>::Vector2D(Vector2D<A>& s): x(s.x), y(s.y) {}
+    Vector2D<T>::Vector2D(Vector2D<A>& vector):
+        x(vector.x), y(vector.y) {
+    }
+
+    template<class T>
+    template<class A>
+    Vector2D<T>& Vector2D<T>::operator=(const Vector2D<A>& rhs) {
+        x = rhs.x;
+        y = rhs.y;
+        return *this;
+    }
 
     template<class T>
     Vector2D<T> Vector2D<T>::operator+(const Vector2D<T>& rhs) const {
