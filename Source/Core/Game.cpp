@@ -7,6 +7,7 @@
  */
 
 #include <SDL.h>
+#include <cstdlib>
 #include <boost/make_shared.hpp>
 #include <Core/Game.hpp>
 #include <Core/LoggingSubsystem.hpp>
@@ -45,8 +46,18 @@ Cosmic::Core::Game::Game() :
 Cosmic::Core::Game::~Game() {
 }
 
+bool Cosmic::Core::Game::isInitialized() const {
+    return composedSubsystem.isInitialized() && videoContext->isReady();
+}
+
 int Cosmic::Core::Game::execute() {
     BOOST_LOG_FUNCTION();
+
+    if (!isInitialized()) {
+        BOOST_LOG_SEV(logger, Common::Severity::Critical)
+            << "Game is not initialized.";
+        return EXIT_FAILURE;
+    }
 
     BOOST_LOG(logger) << "Start main loop";
     gameState = GameState::Running;

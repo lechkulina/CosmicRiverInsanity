@@ -12,6 +12,7 @@
 #include <boost/shared_ptr.hpp>
 #include <SDL.h>
 #include <Common/Logging.hpp>
+#include <Core/AbstractSubsystem.hpp>
 #include <Core/ComposedSubsystem.hpp>
 #include <Core/VideoContext.hpp>
 #include <Core/Texture.hpp>
@@ -29,18 +30,19 @@ namespace Core {
         Shutdown
     };
 
-    class Game {
+    class Game : public AbstractSubsystem {
         public:
             Game();
-            ~Game();
+            virtual ~Game();
 
+            virtual bool isInitialized() const;
             int execute();
 
         private:
             Common::Logger logger;
+            GameState gameState;
             ComposedSubsystem composedSubsystem;
             boost::shared_ptr<VideoContext> videoContext;
-            GameState gameState;
 
             boost::shared_ptr<Texture> texture;
             boost::shared_ptr<Cosmic::Game::Spacecraft> spacecraft;
