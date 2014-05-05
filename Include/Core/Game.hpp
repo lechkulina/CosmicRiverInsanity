@@ -16,6 +16,7 @@
 #include <Core/ComposedSubsystem.hpp>
 #include <Core/VideoContext.hpp>
 #include <Core/Texture.hpp>
+#include <Core/Music.hpp>
 #include <Game/Spacecraft.hpp>
 
 namespace Cosmic {
@@ -45,6 +46,7 @@ namespace Core {
             boost::shared_ptr<VideoContext> videoContext;
 
             boost::shared_ptr<Texture> texture;
+            boost::shared_ptr<Music> music;
             boost::shared_ptr<Cosmic::Game::Spacecraft> spacecraft;
 
             void handleEvent(const SDL_Event& event);

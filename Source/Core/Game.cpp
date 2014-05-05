@@ -42,6 +42,7 @@ Cosmic::Core::Game::Game() :
     }
 
     texture = boost::make_shared<Texture>(videoContext, "./playerShip1_green.png");
+    music = boost::make_shared<Music>("./ObservingTheStar.ogg");
     spacecraft = boost::make_shared<Cosmic::Game::Spacecraft>(texture);
 }
 
@@ -63,6 +64,8 @@ int Cosmic::Core::Game::execute() {
 
     BOOST_LOG(logger) << "Start main loop";
     gameState = GameState::Running;
+
+    music->play();
 
     const float fps = 60.0f;
     const float deltaTime = (1 / fps) * 1000;
