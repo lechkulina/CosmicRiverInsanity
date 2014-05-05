@@ -13,6 +13,7 @@
 #include <Core/LoggingSubsystem.hpp>
 #include <Core/VideoSubsystem.hpp>
 #include <Core/ImageSubsystem.hpp>
+#include <Core/AudioSubsystem.hpp>
 
 Cosmic::Core::Game::Game() :
     logger(
@@ -25,6 +26,7 @@ Cosmic::Core::Game::Game() :
     composedSubsystem.compose(boost::make_shared<LoggingSubsystem>());
     composedSubsystem.compose(boost::make_shared<VideoSubsystem>());
     composedSubsystem.compose(boost::make_shared<ImageSubsystem>());
+    composedSubsystem.compose(boost::make_shared<AudioSubsystem>());
     if (!composedSubsystem.isInitialized()) {
         BOOST_LOG_SEV(logger, Common::Severity::Critical)
             << "Failed to initialize required subsystems.";
