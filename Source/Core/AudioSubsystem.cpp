@@ -42,6 +42,14 @@ Cosmic::Core::AudioSubsystem::AudioSubsystem() :
         return;
     }
 
+    //get the chunk decoders info
+    const int chunkDecoders = Mix_GetNumChunkDecoders();
+    BOOST_LOG(logger) << "There are " << chunkDecoders << " chunk decoders available.";
+    for (int i=0; i < chunkDecoders; ++i) {
+        BOOST_LOG_SEV(logger, Common::Severity::Debug)
+            << "Found " << Mix_GetChunkDecoder(i) << " chunk decoder.";
+    }
+
     //query the actual format that is in use by the opened audio device
     if (Mix_QuerySpec(&frequency, &format, &channels) == 0) {
         BOOST_LOG_SEV(logger, Common::Severity::Critical)
