@@ -23,7 +23,10 @@ Cosmic::Core::Game::Game() :
     BOOST_LOG_FUNCTION();
 
     //initialize all required subsystems
-    composedSubsystem.compose(boost::make_shared<LoggingSubsystem>());
+    composedSubsystem.compose(boost::make_shared<LoggingSubsystem>(
+        Keywords::fileName = "game%3N.log",
+        Keywords::rotationSize = 20 * 1024 * 1024
+    ));
     composedSubsystem.compose(boost::make_shared<VideoSubsystem>());
     composedSubsystem.compose(boost::make_shared<ImageSubsystem>());
     composedSubsystem.compose(boost::make_shared<AudioSubsystem>(

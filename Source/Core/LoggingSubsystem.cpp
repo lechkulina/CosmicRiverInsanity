@@ -13,7 +13,7 @@
 #include <boost/date_time/time.hpp>
 #include <Core/LoggingSubsystem.hpp>
 
-Cosmic::Core::LoggingSubsystem::LoggingSubsystem() :
+Cosmic::Core::Private::LoggingSubsystem::LoggingSubsystem(const std::string& fileName, int rotationSize) :
     core(boost::log::core::get()) {
 
     //add global and thread specific attributes
@@ -22,8 +22,8 @@ Cosmic::Core::LoggingSubsystem::LoggingSubsystem() :
 
     //create sink backend
     boost::shared_ptr<TextFileBackend> backend = boost::make_shared<TextFileBackend>(
-        boost::log::keywords::file_name = "game%3N.log",
-        boost::log::keywords::rotation_size = 5 * 1024 * 1024
+        boost::log::keywords::file_name = fileName,
+        boost::log::keywords::rotation_size = rotationSize
     );
 
     //create sink frontend and set record formatter
@@ -47,11 +47,11 @@ Cosmic::Core::LoggingSubsystem::LoggingSubsystem() :
     core->add_sink(sink);
 }
 
-Cosmic::Core::LoggingSubsystem::~LoggingSubsystem() {
+Cosmic::Core::Private::LoggingSubsystem::~LoggingSubsystem() {
     //remove our sink from logging core, Boost.Log should handle the rest
     core->remove_sink(sink);
 }
 
-bool Cosmic::Core::LoggingSubsystem::isInitialized() const {
+bool Cosmic::Core::Private::LoggingSubsystem::isInitialized() const {
     return sink.use_count() > 0;
 }
