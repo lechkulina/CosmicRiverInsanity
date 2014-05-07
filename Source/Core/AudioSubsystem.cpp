@@ -10,10 +10,13 @@
 #include <SDL_mixer.h>
 #include <Core/AudioSubsystem.hpp>
 
-Cosmic::Core::AudioSubsystem::AudioSubsystem() :
+Cosmic::Core::Private::AudioSubsystem::AudioSubsystem(int frequency, Uint16 format, int channels, int chunkSize) :
     logger(
         boost::log::keywords::severity = Common::Severity::Trace,
         boost::log::keywords::channel = Common::Channel::Subsystem),
+    frequency(0),
+    format(0),
+    channels(0),
     initialized(false) {
     BOOST_LOG_FUNCTION();
 
@@ -33,9 +36,9 @@ Cosmic::Core::AudioSubsystem::AudioSubsystem() :
     BOOST_LOG_SEV(logger, Common::Severity::Debug)
         << "SDL_mixer " << int(version.major) << "." << int(version.minor) << "." << int(version.patch) << " initialized with OGG/Vorbis support.";
 
-    //open audio device with default settings (for now at least...)
+    //open audio device
     BOOST_LOG(logger) << "Opening audio device.";
-    if (Mix_OpenAudio(MIX_DEFAULT_FREQUENCY, MIX_DEFAULT_FORMAT, 2, 4096) != 0) {
+    if (Mix_OpenAudio(frequency, format, channels, chunkSize) != 0) {
         BOOST_LOG_SEV(logger, Common::Severity::Critical)
             << "Failed to open audio device. " << Mix_GetError();
         Mix_Quit();
@@ -59,7 +62,7 @@ Cosmic::Core::AudioSubsystem::AudioSubsystem() :
     }
 
     //query the actual format that is in use by the opened audio device
-    if (Mix_QuerySpec(&frequency, &format, &channels) == 0) {
+    if (Mix_QuerySpec(&this->frequency, &this->format, &this->channels) == 0) {
         BOOST_LOG_SEV(logger, Common::Severity::Critical)
             << "Failed to query audio format that is in use by the current audio device. " << Mix_GetError();
         Mix_CloseAudio();
@@ -67,12 +70,13 @@ Cosmic::Core::AudioSubsystem::AudioSubsystem() :
         return;
     }
     BOOST_LOG_SEV(logger, Common::Severity::Debug)
-        << "Audio device with frequency " << frequency << ", format " << format << " and number of channels " << channels << " opened.";
+        << "Audio device with frequency " << this->frequency << ", format " << this->format
+        << " and number of channels " << this->channels << " opened.";
 
     initialized = true;
 }
 
-Cosmic::Core::AudioSubsystem::~AudioSubsystem() {
+Cosmic::Core::Private::AudioSubsystem::~AudioSubsystem() {
     BOOST_LOG_FUNCTION();
 
     //check if we are initialized
@@ -90,6 +94,6 @@ Cosmic::Core::AudioSubsystem::~AudioSubsystem() {
     Mix_Quit();
 }
 
-bool Cosmic::Core::AudioSubsystem::isInitialized() const {
+bool Cosmic::Core::Private::AudioSubsystem::isInitialized() const {
     return initialized;
 }

@@ -26,7 +26,9 @@ Cosmic::Core::Game::Game() :
     composedSubsystem.compose(boost::make_shared<LoggingSubsystem>());
     composedSubsystem.compose(boost::make_shared<VideoSubsystem>());
     composedSubsystem.compose(boost::make_shared<ImageSubsystem>());
-    composedSubsystem.compose(boost::make_shared<AudioSubsystem>());
+    composedSubsystem.compose(boost::make_shared<AudioSubsystem>(
+        Keywords::frequency = MIX_DEFAULT_FREQUENCY
+    ));
     if (!composedSubsystem.isInitialized()) {
         BOOST_LOG_SEV(logger, Common::Severity::Critical)
             << "Failed to initialize required subsystems.";
