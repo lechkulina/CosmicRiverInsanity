@@ -52,7 +52,6 @@ namespace Core {
                 int frequency;
                 Uint16 format;
                 int channels;
-                bool initialized;
         };
 
     }

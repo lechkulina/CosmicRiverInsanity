@@ -16,9 +16,18 @@ Cosmic::Core::Private::AudioSubsystem::AudioSubsystem(int frequency, Uint16 form
         boost::log::keywords::channel = Common::Channel::Subsystem),
     frequency(0),
     format(0),
-    channels(0),
-    initialized(false) {
+    channels(0) {
     BOOST_LOG_FUNCTION();
+
+    //initialize audio SDL's audio subsystem - this is required by the Mix_OpenAudio
+    BOOST_LOG(logger) << "Initializing audio subsystem.";
+    if (SDL_InitSubSystem(SDL_INIT_AUDIO) != 0) {
+        BOOST_LOG_SEV(logger, Common::Severity::Critical)
+            << "Failed to initialize SDL audio subsystem. " << SDL_GetError();
+        return;
+    }
+    BOOST_LOG_SEV(logger, Common::Severity::Debug)
+        << "Audio subsystem initialized with " << SDL_GetCurrentAudioDriver() << " audio driver.";
 
     //initialize SDL mixer library with OGG/Vorbis support
     BOOST_LOG(logger) << "Initializing SDL_mixer library with OGG/Vorbis support.";
@@ -28,13 +37,14 @@ Cosmic::Core::Private::AudioSubsystem::AudioSubsystem(int frequency, Uint16 form
         BOOST_LOG_SEV(logger, Common::Severity::Critical)
             << "Failed to initialize SDL_mixer with OGG/Vorbis support. " << Mix_GetError();
         Mix_Quit();
+        SDL_QuitSubSystem(SDL_INIT_AUDIO);
         return;
     }
 
     //retrieve version of SDL mixer library that we are currently linked against
     memcpy(&version, Mix_Linked_Version(), sizeof(SDL_version));
     BOOST_LOG_SEV(logger, Common::Severity::Debug)
-        << "SDL_mixer " << int(version.major) << "." << int(version.minor) << "." << int(version.patch) << " initialized with OGG/Vorbis support.";
+        << "SDL_mixer " << int(version.major) << "." << int(version.minor) << "." << int(version.patch) << " with OGG/Vorbis support initialized.";
 
     //open audio device
     BOOST_LOG(logger) << "Opening audio device.";
@@ -42,6 +52,7 @@ Cosmic::Core::Private::AudioSubsystem::AudioSubsystem(int frequency, Uint16 form
         BOOST_LOG_SEV(logger, Common::Severity::Critical)
             << "Failed to open audio device. " << Mix_GetError();
         Mix_Quit();
+        SDL_QuitSubSystem(SDL_INIT_AUDIO);
         return;
     }
 
@@ -67,13 +78,12 @@ Cosmic::Core::Private::AudioSubsystem::AudioSubsystem(int frequency, Uint16 form
             << "Failed to query audio format that is in use by the current audio device. " << Mix_GetError();
         Mix_CloseAudio();
         Mix_Quit();
+        SDL_QuitSubSystem(SDL_INIT_AUDIO);
         return;
     }
     BOOST_LOG_SEV(logger, Common::Severity::Debug)
         << "Audio device with frequency " << this->frequency << ", format " << this->format
         << " and number of channels " << this->channels << " opened.";
-
-    initialized = true;
 }
 
 Cosmic::Core::Private::AudioSubsystem::~AudioSubsystem() {
@@ -92,8 +102,12 @@ Cosmic::Core::Private::AudioSubsystem::~AudioSubsystem() {
     //clean up SDL_mixer library stuff
     BOOST_LOG(logger) << "Cleaning up SDL_mixer library.";
     Mix_Quit();
+
+    //cleanup audio subsystem - this is not required but it won't harm
+    BOOST_LOG(logger) << "Cleaning up audio subsystem.";
+    SDL_QuitSubSystem(SDL_INIT_AUDIO);
 }
 
 bool Cosmic::Core::Private::AudioSubsystem::isInitialized() const {
-    return initialized;
+    return SDL_WasInit(SDL_INIT_AUDIO) != 0;
 }
