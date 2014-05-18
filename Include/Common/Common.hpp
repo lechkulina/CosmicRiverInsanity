@@ -10,48 +10,8 @@
 #define COMMON_HPP_
 
 #include <boost/utility.hpp>
-#include <boost/signals2.hpp>
+#include <boost/shared_ptr.hpp>
 
 #define COSMIC_UNUSED(x) (void)x
-
-namespace Cosmic {
-
-namespace Common {
-
-    template<class S>
-    class SignalAdapter {
-        public:
-            typedef S Signal;
-            typedef typename Signal::slot_type Slot;
-            typedef boost::signals2::connection Connection;
-
-            explicit SignalAdapter(Signal& signal);
-            SignalAdapter(const SignalAdapter&) = delete;
-            SignalAdapter& operator=(const SignalAdapter&) = delete;
-
-            Connection connect(const Slot& slot);
-            void disconnect(const Slot& slot);
-
-        private:
-            Signal& signal;
-    };
-
-    template<class S>
-    SignalAdapter<S>::SignalAdapter(Signal& signal) :
-        signal(signal) {}
-
-    template<class S>
-    inline typename SignalAdapter<S>::Connection
-    SignalAdapter<S>::connect(const typename SignalAdapter<S>::Slot& slot) {
-        return signal.connect(slot);
-    }
-
-    template<class S>
-    inline void SignalAdapter<S>::disconnect(const Slot& slot) {
-        signal.disconnect(slot);
-    }
-}
-
-}
 
 #endif /* COMMON_HPP_ */
