@@ -8,25 +8,13 @@
 
 #include <Core/Texture.hpp>
 
-Cosmic::Core::Texture::Texture() :
+Cosmic::Core::Texture::Texture(boost::shared_ptr<VideoContext> videoContext, const boost::filesystem::path& path) :
     logger(
         boost::log::keywords::severity = Common::Severity::Trace,
         boost::log::keywords::channel = Common::Channel::Resources),
     texture(nullptr),
     width(0),
     height(0) {
-}
-
-Cosmic::Core::Texture::Texture(boost::shared_ptr<VideoContext> videoContext, const boost::filesystem::path& path) :
-    Texture() {
-    load(videoContext, path);
-}
-
-Cosmic::Core::Texture::~Texture() {
-    unload();
-}
-
-void Cosmic::Core::Texture::load(boost::shared_ptr<VideoContext> videoContext, const boost::filesystem::path& path) {
     BOOST_LOG_FUNCTION();
 
     //load and decode image file
@@ -58,11 +46,9 @@ void Cosmic::Core::Texture::load(boost::shared_ptr<VideoContext> videoContext, c
 
     BOOST_LOG_SEV(logger, Common::Severity::Debug)
         << "Texture " << path.string() << " loaded.";
-
-    onLoadSignal(*this);
 }
 
-void Cosmic::Core::Texture::unload() {
+Cosmic::Core::Texture::~Texture() {
     BOOST_LOG_FUNCTION();
 
     if (!isLoaded()) {
@@ -70,21 +56,11 @@ void Cosmic::Core::Texture::unload() {
         return;
     }
 
-    onUnloadSignal(*this);
-
-    path.clear();
     SDL_DestroyTexture(texture);
-    texture = nullptr;
-    width = 0;
-    height = 0;
 }
 
 bool Cosmic::Core::Texture::isLoaded() const {
     return texture != nullptr;
-}
-
-const boost::filesystem::path& Cosmic::Core::Texture::getPath() const {
-    return path;
 }
 
 int Cosmic::Core::Texture::getWidth() const {
