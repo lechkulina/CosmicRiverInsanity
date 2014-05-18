@@ -26,6 +26,8 @@ namespace Common {
             typedef boost::signals2::connection Connection;
 
             explicit SignalAdapter(Signal& signal);
+            SignalAdapter(const SignalAdapter&) = delete;
+            SignalAdapter& operator=(const SignalAdapter&) = delete;
 
             Connection connect(const Slot& slot);
             void disconnect(const Slot& slot);
