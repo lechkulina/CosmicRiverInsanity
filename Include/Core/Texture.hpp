@@ -14,17 +14,25 @@
 #include <boost/filesystem.hpp>
 #include <Common/Logging.hpp>
 #include <Core/VideoContext.hpp>
+#include <Core/AbstractAsset.hpp>
 
 namespace Cosmic {
 
 namespace Core {
 
-    class Texture {
+    class Texture : public AbstractAsset {
         public:
+            Texture();
             Texture(boost::shared_ptr<VideoContext> videoContext, const boost::filesystem::path& path);
+            Texture(const Texture&) = delete;
+            Texture& operator=(const Texture&) = delete;
+
             virtual ~Texture();
 
+            void load(boost::shared_ptr<VideoContext> videoContext, const boost::filesystem::path& path);
+            void unload();
             virtual bool isLoaded() const;
+            virtual const boost::filesystem::path& getPath() const;
 
             int getWidth() const;
             int getHeight() const;
@@ -36,6 +44,7 @@ namespace Core {
 
         private:
             Common::Logger logger;
+            boost::filesystem::path path;
             SDL_Texture* texture;
             int width;
             int height;

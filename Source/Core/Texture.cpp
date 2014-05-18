@@ -8,13 +8,25 @@
 
 #include <Core/Texture.hpp>
 
-Cosmic::Core::Texture::Texture(boost::shared_ptr<VideoContext> videoContext, const boost::filesystem::path& path) :
+Cosmic::Core::Texture::Texture() :
     logger(
         boost::log::keywords::severity = Common::Severity::Trace,
         boost::log::keywords::channel = Common::Channel::Resources),
     texture(nullptr),
     width(0),
     height(0) {
+}
+
+Cosmic::Core::Texture::Texture(boost::shared_ptr<VideoContext> videoContext, const boost::filesystem::path& path) :
+    Texture() {
+    load(videoContext, path);
+}
+
+Cosmic::Core::Texture::~Texture() {
+    unload();
+}
+
+void Cosmic::Core::Texture::load(boost::shared_ptr<VideoContext> videoContext, const boost::filesystem::path& path) {
     BOOST_LOG_FUNCTION();
 
     //load and decode image file
@@ -46,9 +58,11 @@ Cosmic::Core::Texture::Texture(boost::shared_ptr<VideoContext> videoContext, con
 
     BOOST_LOG_SEV(logger, Common::Severity::Debug)
         << "Texture " << path.string() << " loaded.";
+
+    onLoadSignal(*this);
 }
 
-Cosmic::Core::Texture::~Texture() {
+void Cosmic::Core::Texture::unload() {
     BOOST_LOG_FUNCTION();
 
     if (!isLoaded()) {
@@ -56,11 +70,21 @@ Cosmic::Core::Texture::~Texture() {
         return;
     }
 
+    onUnloadSignal(*this);
+
+    path.clear();
     SDL_DestroyTexture(texture);
+    texture = nullptr;
+    width = 0;
+    height = 0;
 }
 
 bool Cosmic::Core::Texture::isLoaded() const {
     return texture != nullptr;
+}
+
+const boost::filesystem::path& Cosmic::Core::Texture::getPath() const {
+    return path;
 }
 
 int Cosmic::Core::Texture::getWidth() const {
@@ -81,7 +105,7 @@ void Cosmic::Core::Texture::copy(boost::shared_ptr<VideoContext> videoContext, i
     }
 }
 
-void Cosmic::Core::Texture::copyRotated(boost::shared_ptr<VideoContext> videoContext,int x, int y, double angle) {
+void Cosmic::Core::Texture::copyRotated(boost::shared_ptr<VideoContext> videoContext, int x, int y, double angle) {
     BOOST_LOG_FUNCTION();
 
     const SDL_Rect destination = {x, y, width, height};
