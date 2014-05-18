@@ -8,7 +8,8 @@
 
 #include <Core/Texture.hpp>
 
-Cosmic::Core::Texture::Texture(boost::shared_ptr<VideoContext> videoContext, const boost::filesystem::path& path) :
+Cosmic::Core::Texture::Texture(boost::shared_ptr<VideoContext> videoContext,
+                                const boost::filesystem::path& path) :
     logger(
         boost::log::keywords::severity = Common::Severity::Trace,
         boost::log::keywords::channel = Common::Channel::Resources),

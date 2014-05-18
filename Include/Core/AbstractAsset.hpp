@@ -20,7 +20,6 @@ namespace Core {
             AbstractAsset& operator=(const AbstractAsset&) = delete;
 
             virtual ~AbstractAsset() {};
-
             virtual bool isLoaded() const =0;
     };
 
