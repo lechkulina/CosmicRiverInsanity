@@ -6,8 +6,8 @@
  * E-Mail: kulinalech@gmail.com
  */
 
-#ifndef COMMON_HPP_
-#define COMMON_HPP_
+#ifndef COSMIC_PHYSICS_COMMON_HPP_
+#define COSMIC_PHYSICS_COMMON_HPP_
 
 namespace Cosmic {
 
@@ -29,4 +29,4 @@ namespace Physics {
 
 }
 
-#endif /* COMMON_HPP_ */
+#endif /* COSMIC_PHYSICS_COMMON_HPP_ */
