@@ -15,10 +15,10 @@ namespace Cosmic {
 
 namespace Common {
 
-    template<class S>
+    template<class Signature>
     class SignalAdapter {
         public:
-            typedef S Signal;
+            typedef boost::signals2::signal<Signature> Signal;
             typedef typename Signal::slot_type Slot;
             typedef boost::signals2::connection Connection;
 
@@ -33,19 +33,19 @@ namespace Common {
             Signal& signal;
     };
 
-    template<class S>
-    SignalAdapter<S>::SignalAdapter(Signal& signal) :
+    template<class Signature>
+    SignalAdapter<Signature>::SignalAdapter(Signal& signal) :
         signal(signal) {
     }
 
-    template<class S>
-    inline typename SignalAdapter<S>::Connection
-    SignalAdapter<S>::connect(const typename SignalAdapter<S>::Slot& slot) {
+    template<class Signature>
+    inline typename SignalAdapter<Signature>::Connection
+    SignalAdapter<Signature>::connect(const typename SignalAdapter<Signature>::Slot& slot) {
         return signal.connect(slot);
     }
 
-    template<class S>
-    inline void SignalAdapter<S>::disconnect(const Slot& slot) {
+    template<class Signature>
+    inline void SignalAdapter<Signature>::disconnect(const Slot& slot) {
         signal.disconnect(slot);
     }
 }
