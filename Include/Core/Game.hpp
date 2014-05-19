@@ -19,6 +19,7 @@
 #include <Core/TexturesCache.hpp>
 
 //!!! TEST
+#include <Core/TextureFileRequest.hpp>
 #include <Core/Texture.hpp>
 #include <Core/Music.hpp>
 #include <Game/Spacecraft.hpp>
