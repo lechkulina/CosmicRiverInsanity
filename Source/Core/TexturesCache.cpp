@@ -7,8 +7,8 @@
  */
 
 #include <Core/TexturesCache.hpp>
-#include <Core/TextureRequest.hpp>
-
+#include <Core/TextureFileRequest.hpp>
+/*
 Cosmic::Core::TexturesCache::TexturesCache::TexturesCache(boost::shared_ptr<AbstractLoader> loader) :
     logger(
         boost::log::keywords::severity = Common::Severity::Trace,
@@ -37,4 +37,4 @@ bool Cosmic::Core::TexturesCache::insert(const std::string& name, boost::shared_
 
     textures.insert(std::make_pair(name, texture));
     return true;
-}
+}*/

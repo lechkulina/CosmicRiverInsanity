@@ -9,7 +9,7 @@
 #include <Core/Texture.hpp>
 
 Cosmic::Core::Texture::Texture(boost::shared_ptr<VideoContext> videoContext,
-                                const boost::filesystem::path& path) :
+                                const boost::filesystem::path& assetPath) :
     logger(
         boost::log::keywords::severity = Common::Severity::Trace,
         boost::log::keywords::channel = Common::Channel::Resources),
@@ -19,11 +19,11 @@ Cosmic::Core::Texture::Texture(boost::shared_ptr<VideoContext> videoContext,
     BOOST_LOG_FUNCTION();
 
     //load and decode image file
-    BOOST_LOG(logger) << "Loading texture " << path.string();
-    SDL_Surface* const surface = IMG_Load(path.string().c_str());
+    BOOST_LOG(logger) << "Loading texture " << assetPath.string();
+    SDL_Surface* const surface = IMG_Load(assetPath.string().c_str());
     if (!surface) {
         BOOST_LOG_SEV(logger, Common::Severity::Error)
-            << "Failed to load image " << path.string() << " for texture. " << IMG_GetError();
+            << "Failed to load image " << assetPath.string() << " for texture. " << IMG_GetError();
         return;
     }
 
@@ -32,7 +32,7 @@ Cosmic::Core::Texture::Texture(boost::shared_ptr<VideoContext> videoContext,
     SDL_FreeSurface(surface);
     if (!texture) {
         BOOST_LOG_SEV(logger, Common::Severity::Error)
-            << "Failed to create texture from surface " << path.string() << ". " << IMG_GetError();
+            << "Failed to create texture from surface " << assetPath.string() << ". " << IMG_GetError();
         return;
     }
 
@@ -41,12 +41,12 @@ Cosmic::Core::Texture::Texture(boost::shared_ptr<VideoContext> videoContext,
         SDL_DestroyTexture(texture);
         texture = nullptr;
         BOOST_LOG_SEV(logger, Common::Severity::Error)
-            << "Failed to query texture " << path.string() << " dimensions. " << SDL_GetError();
+            << "Failed to query texture " << assetPath.string() << " dimensions. " << SDL_GetError();
         return;
     }
 
     BOOST_LOG_SEV(logger, Common::Severity::Debug)
-        << "Texture " << path.string() << " loaded.";
+        << "Texture " << assetPath.string() << " loaded.";
 }
 
 Cosmic::Core::Texture::~Texture() {

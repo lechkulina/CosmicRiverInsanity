@@ -23,7 +23,7 @@ namespace Cosmic {
 namespace Core {
 
     class TexturesCache : public AbstractCache {
-        public:
+        /*public:
             explicit TexturesCache(boost::shared_ptr<AbstractLoader> loader);
 
             bool request(boost::shared_ptr<VideoContext> videoContext, const std::string& name,
@@ -35,7 +35,7 @@ namespace Core {
 
             Common::Logger logger;
             boost::shared_ptr<AbstractLoader> loader;
-            Textures textures;
+            Textures textures;*/
     };
 
 }

@@ -24,7 +24,7 @@ namespace Core {
     class Texture : public AbstractAsset {
         public:
             Texture(boost::shared_ptr<VideoContext> videoContext,
-                    const boost::filesystem::path& path);
+                    const boost::filesystem::path& assetPath);
             virtual ~Texture();
 
             virtual bool isLoaded() const;
