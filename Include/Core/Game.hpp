@@ -13,7 +13,14 @@
 #include <boost/shared_ptr.hpp>
 #include <Common/Logging.hpp>
 #include <Core/AbstractSubsystem.hpp>
+
 #include <Core/ComposedSubsystem.hpp>
+
+#include <Core/LoggingSubsystem.hpp>
+#include <Core/VideoSubsystem.hpp>
+#include <Core/ImageSubsystem.hpp>
+#include <Core/AudioSubsystem.hpp>
+
 #include <Core/VideoContext.hpp>
 #include <Core/AsyncLoader.hpp>
 #include <Core/TexturesCache.hpp>
@@ -48,6 +55,7 @@ namespace Core {
         private:
             Common::Logger logger;
             GameState gameState;
+            boost::shared_ptr<LoggingSubsystem> loggingSubsystem;
             ComposedSubsystem composedSubsystem;
             boost::shared_ptr<VideoContext> videoContext;
             boost::shared_ptr<AsyncLoader> asyncLoader;

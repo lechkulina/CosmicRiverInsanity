@@ -10,10 +10,6 @@
 #include <cstdlib>
 #include <boost/make_shared.hpp>
 #include <Core/Game.hpp>
-#include <Core/LoggingSubsystem.hpp>
-#include <Core/VideoSubsystem.hpp>
-#include <Core/ImageSubsystem.hpp>
-#include <Core/AudioSubsystem.hpp>
 
 Cosmic::Core::Game::Game() :
     logger(
@@ -23,10 +19,10 @@ Cosmic::Core::Game::Game() :
     BOOST_LOG_FUNCTION();
 
     //initialize all required subsystems
-    composedSubsystem.compose(boost::make_shared<LoggingSubsystem>(
+    loggingSubsystem = LoggingSubsystem::make(
         Keywords::fileName = "game%3N.log",
         Keywords::rotationSize = 20 * 1024 * 1024
-    ));
+    );
     composedSubsystem.compose(boost::make_shared<VideoSubsystem>());
     composedSubsystem.compose(boost::make_shared<ImageSubsystem>());
     composedSubsystem.compose(boost::make_shared<AudioSubsystem>(
