@@ -10,7 +10,11 @@
 #define VIDEOCONTEXT_HPP_
 
 #include <SDL.h>
+#include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
+#include <boost/parameter.hpp>
 #include <Common/Logging.hpp>
+#include <Common/Rectangle.hpp>
 #include <Common/Color.hpp>
 #include <Core/AbstractContext.hpp>
 
@@ -18,9 +22,16 @@ namespace Cosmic {
 
 namespace Core {
 
+    namespace Keywords {
+
+        BOOST_PARAMETER_NAME((windowTitle, Tags) windowTitle)
+        BOOST_PARAMETER_NAME((windowGeometry, Tags) windowGeometry)
+
+    }
+
     class VideoContext : public AbstractContext {
         public:
-            VideoContext();
+            VideoContext(const std::string& windowTitle, const Common::Rectangle<Sint32>& windowGeometry);
             virtual ~VideoContext();
 
             virtual bool isReady() const;
@@ -30,6 +41,18 @@ namespace Core {
             virtual void present();
 
             operator SDL_Renderer*();
+
+            BOOST_PARAMETER_MEMBER_FUNCTION(
+                (boost::shared_ptr<VideoContext>), static make, Keywords::Tags,
+                (optional
+                    (windowTitle, (const std::string&), "")
+                    (windowGeometry, (const Common::Rectangle<Sint32>&), Common::Rectangle<Sint32>(
+                        SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, 800, 600
+                    ))
+                )
+            ) {
+                return boost::make_shared<VideoContext>(windowTitle, windowGeometry);
+            }
 
         private:
             Common::Logger logger;

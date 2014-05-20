@@ -58,7 +58,9 @@ Cosmic::Core::Game::Game() :
     }
 
     //create and initialize video context
-    videoContext = boost::make_shared<VideoContext>();
+    videoContext = VideoContext::make(
+        Keywords::windowTitle = "Cosmic River Insanity"
+    );
     if (!videoContext->isReady()) {
         BOOST_LOG_SEV(logger, Common::Severity::Critical)
             << "Failed to create video context.";

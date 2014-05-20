@@ -8,7 +8,7 @@
 
 #include <Core/VideoContext.hpp>
 
-Cosmic::Core::VideoContext::VideoContext() :
+Cosmic::Core::VideoContext::VideoContext(const std::string& windowTitle, const Common::Rectangle<Sint32>& windowGeometry) :
     logger(
         boost::log::keywords::severity = Common::Severity::Trace,
         boost::log::keywords::channel = Common::Channel::Context),
@@ -18,8 +18,8 @@ Cosmic::Core::VideoContext::VideoContext() :
 
     //create window for our insane game !
     BOOST_LOG(logger) << "Creating window.";
-    if ((window = SDL_CreateWindow("Cosmic River Insanity", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED,
-                                    800, 600, SDL_WINDOW_HIDDEN)) == nullptr) {
+    if ((window = SDL_CreateWindow(windowTitle.c_str(), windowGeometry.x, windowGeometry.y,
+                                    windowGeometry.width, windowGeometry.height, SDL_WINDOW_HIDDEN)) == nullptr) {
         BOOST_LOG_SEV(logger, Common::Severity::Critical)
             << "Failed to create window. " << SDL_GetError();
         return;
