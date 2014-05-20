@@ -57,6 +57,7 @@ namespace Core {
             GameState gameState;
             boost::shared_ptr<LoggingSubsystem> loggingSubsystem;
             boost::shared_ptr<VideoSubsystem> videoSubsystem;
+            boost::shared_ptr<ImageSubsystem> imageSubsystem;
             boost::shared_ptr<AudioSubsystem> audioSubsystem;
 
             ComposedSubsystem composedSubsystem;

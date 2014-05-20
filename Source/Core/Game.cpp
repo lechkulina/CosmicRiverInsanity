@@ -39,6 +39,13 @@ Cosmic::Core::Game::Game() :
         return;
     }
 
+    imageSubsystem = ImageSubsystem::make();
+    if (!imageSubsystem->isInitialized()) {
+        BOOST_LOG_SEV(logger, Common::Severity::Critical)
+            << "Failed to initialize image subsystem.";
+        return;
+    }
+
     //create and initialize audio subsystem
     audioSubsystem = AudioSubsystem::make(
         Keywords::frequency = MIX_DEFAULT_FREQUENCY
@@ -49,7 +56,6 @@ Cosmic::Core::Game::Game() :
         return;
     }
 
-    composedSubsystem.compose(boost::make_shared<ImageSubsystem>());
 
 
     if (!composedSubsystem.isInitialized()) {

@@ -9,6 +9,8 @@
 #ifndef IMAGESUBSYSTEM_HPP_
 #define IMAGESUBSYSTEM_HPP_
 
+#include <boost/shared_ptr.hpp>
+#include <boost/make_shared.hpp>
 #include <Common/Logging.hpp>
 #include <Core/AbstractSubsystem.hpp>
 
@@ -22,6 +24,10 @@ namespace Core {
             virtual ~ImageSubsystem();
 
             virtual bool isInitialized() const;
+
+            static boost::shared_ptr<ImageSubsystem> make() {
+                return boost::make_shared<ImageSubsystem>();
+            }
 
         private:
             Common::Logger logger;
