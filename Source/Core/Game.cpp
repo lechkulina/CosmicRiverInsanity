@@ -29,6 +29,16 @@ Cosmic::Core::Game::Game() :
         return;
     }
 
+    //create and initialize video subsystem
+    videoSubsystem = VideoSubsystem::make(
+        Keywords::hideCursor = false
+    );
+    if (!videoSubsystem->isInitialized()) {
+        BOOST_LOG_SEV(logger, Common::Severity::Critical)
+            << "Failed to initialize video subsystem.";
+        return;
+    }
+
     //create and initialize audio subsystem
     audioSubsystem = AudioSubsystem::make(
         Keywords::frequency = MIX_DEFAULT_FREQUENCY
@@ -39,7 +49,6 @@ Cosmic::Core::Game::Game() :
         return;
     }
 
-    composedSubsystem.compose(boost::make_shared<VideoSubsystem>());
     composedSubsystem.compose(boost::make_shared<ImageSubsystem>());
 
 

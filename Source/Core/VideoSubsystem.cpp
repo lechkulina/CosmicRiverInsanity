@@ -8,11 +8,12 @@
 
 #include <Core/VideoSubsystem.hpp>
 
-Cosmic::Core::VideoSubsystem::VideoSubsystem() :
+Cosmic::Core::VideoSubsystem::VideoSubsystem(bool disableScreenSaver, bool hideCursor) :
     logger(
         boost::log::keywords::severity = Common::Severity::Trace,
         boost::log::keywords::channel = Common::Channel::Subsystem),
-    restoreScreenSaver(SDL_FALSE) {
+    restoreScreenSaver(SDL_FALSE),
+    restoreCursor(SDL_FALSE) {
     BOOST_LOG_FUNCTION();
 
     //initialize SDL core stuff together with the video subsystem
@@ -40,10 +41,17 @@ Cosmic::Core::VideoSubsystem::VideoSubsystem() :
     BOOST_LOG_SEV(logger, Common::Severity::Debug)
         << "Video subsystem initialized with " << SDL_GetCurrentVideoDriver() << " display driver.";
 
-    //disable screen saver and hide cursor
-    restoreScreenSaver = SDL_IsScreenSaverEnabled();
-    SDL_DisableScreenSaver();
-    SDL_ShowCursor(SDL_DISABLE);
+    //disable screen saver
+    if (disableScreenSaver) {
+        restoreScreenSaver = SDL_IsScreenSaverEnabled();
+        SDL_DisableScreenSaver();
+    }
+
+    //hide cursor
+    if (hideCursor) {
+        restoreCursor = SDL_ShowCursor(SDL_QUERY) == 1 ? SDL_TRUE : SDL_FALSE;
+        SDL_ShowCursor(SDL_DISABLE);
+    }
 }
 
 Cosmic::Core::VideoSubsystem::~VideoSubsystem() {
@@ -58,6 +66,11 @@ Cosmic::Core::VideoSubsystem::~VideoSubsystem() {
     //restore screen saver state
     if (restoreScreenSaver == SDL_TRUE) {
         SDL_EnableScreenSaver();
+    }
+
+    //restore cursor state
+    if (restoreCursor == SDL_TRUE) {
+        SDL_ShowCursor(SDL_ENABLE);
     }
 
     //clean up video subsystem
