@@ -6,11 +6,9 @@
  *  E-Mail: kulinalech@gmail.com
  */
 
-#include <SDL.h>
-#include <SDL_mixer.h>
 #include <Core/AudioSubsystem.hpp>
 
-Cosmic::Core::Private::AudioSubsystem::AudioSubsystem(int frequency, Uint16 format, int channels, int chunkSize) :
+Cosmic::Core::AudioSubsystem::AudioSubsystem(Sint32 frequency, Uint16 format, Sint32 channels, Sint32 chunkSize) :
     logger(
         boost::log::keywords::severity = Common::Severity::Trace,
         boost::log::keywords::channel = Common::Channel::Subsystem),
@@ -86,12 +84,13 @@ Cosmic::Core::Private::AudioSubsystem::AudioSubsystem(int frequency, Uint16 form
         << " and number of channels " << this->channels << " opened.";
 }
 
-Cosmic::Core::Private::AudioSubsystem::~AudioSubsystem() {
+Cosmic::Core::AudioSubsystem::~AudioSubsystem() {
     BOOST_LOG_FUNCTION();
 
     //check if we are initialized
     if (!isInitialized()) {
-        BOOST_LOG_SEV(logger, Common::Severity::Debug) << "SDL_mixer library was not initialized.";
+        BOOST_LOG_SEV(logger, Common::Severity::Debug)
+            << "SDL_mixer library was not initialized.";
         return;
     }
 
@@ -108,6 +107,6 @@ Cosmic::Core::Private::AudioSubsystem::~AudioSubsystem() {
     SDL_QuitSubSystem(SDL_INIT_AUDIO);
 }
 
-bool Cosmic::Core::Private::AudioSubsystem::isInitialized() const {
+bool Cosmic::Core::AudioSubsystem::isInitialized() const {
     return SDL_WasInit(SDL_INIT_AUDIO) != 0;
 }

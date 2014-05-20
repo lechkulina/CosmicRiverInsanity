@@ -56,6 +56,8 @@ namespace Core {
             Common::Logger logger;
             GameState gameState;
             boost::shared_ptr<LoggingSubsystem> loggingSubsystem;
+            boost::shared_ptr<AudioSubsystem> audioSubsystem;
+
             ComposedSubsystem composedSubsystem;
             boost::shared_ptr<VideoContext> videoContext;
             boost::shared_ptr<AsyncLoader> asyncLoader;

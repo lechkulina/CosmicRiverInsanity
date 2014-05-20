@@ -18,16 +18,31 @@ Cosmic::Core::Game::Game() :
     gameState(GameState::Startup) {
     BOOST_LOG_FUNCTION();
 
-    //initialize all required subsystems
+    //create and initialize logging subsystem
     loggingSubsystem = LoggingSubsystem::make(
         Keywords::fileName = "game%3N.log",
         Keywords::rotationSize = 20 * 1024 * 1024
     );
+    if (!loggingSubsystem->isInitialized()) {
+        BOOST_LOG_SEV(logger, Common::Severity::Critical)
+            << "Failed to initialize logging subsystem.";
+        return;
+    }
+
+    //create and initialize audio subsystem
+    audioSubsystem = AudioSubsystem::make(
+        Keywords::frequency = MIX_DEFAULT_FREQUENCY
+    );
+    if (!audioSubsystem->isInitialized()) {
+        BOOST_LOG_SEV(logger, Common::Severity::Critical)
+            << "Failed to initialize audio subsystem.";
+        return;
+    }
+
     composedSubsystem.compose(boost::make_shared<VideoSubsystem>());
     composedSubsystem.compose(boost::make_shared<ImageSubsystem>());
-    composedSubsystem.compose(boost::make_shared<AudioSubsystem>(
-        Keywords::frequency = MIX_DEFAULT_FREQUENCY
-    ));
+
+
     if (!composedSubsystem.isInitialized()) {
         BOOST_LOG_SEV(logger, Common::Severity::Critical)
             << "Failed to initialize required subsystems.";
