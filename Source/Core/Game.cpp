@@ -39,6 +39,7 @@ Cosmic::Core::Game::Game() :
         return;
     }
 
+    //create and initialize image subsystem
     imageSubsystem = ImageSubsystem::make();
     if (!imageSubsystem->isInitialized()) {
         BOOST_LOG_SEV(logger, Common::Severity::Critical)
@@ -56,15 +57,7 @@ Cosmic::Core::Game::Game() :
         return;
     }
 
-
-
-    if (!composedSubsystem.isInitialized()) {
-        BOOST_LOG_SEV(logger, Common::Severity::Critical)
-            << "Failed to initialize required subsystems.";
-        return;
-    }
-
-    //create video context
+    //create and initialize video context
     videoContext = boost::make_shared<VideoContext>();
     if (!videoContext->isReady()) {
         BOOST_LOG_SEV(logger, Common::Severity::Critical)
@@ -91,7 +84,7 @@ Cosmic::Core::Game::~Game() {
 }
 
 bool Cosmic::Core::Game::isInitialized() const {
-    return composedSubsystem.isInitialized() && videoContext->isReady();
+    return videoContext->isReady();
 }
 
 int Cosmic::Core::Game::execute() {

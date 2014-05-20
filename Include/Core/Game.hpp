@@ -13,14 +13,10 @@
 #include <boost/shared_ptr.hpp>
 #include <Common/Logging.hpp>
 #include <Core/AbstractSubsystem.hpp>
-
-#include <Core/ComposedSubsystem.hpp>
-
 #include <Core/LoggingSubsystem.hpp>
 #include <Core/VideoSubsystem.hpp>
 #include <Core/ImageSubsystem.hpp>
 #include <Core/AudioSubsystem.hpp>
-
 #include <Core/VideoContext.hpp>
 #include <Core/AsyncLoader.hpp>
 #include <Core/TexturesCache.hpp>
@@ -59,8 +55,6 @@ namespace Core {
             boost::shared_ptr<VideoSubsystem> videoSubsystem;
             boost::shared_ptr<ImageSubsystem> imageSubsystem;
             boost::shared_ptr<AudioSubsystem> audioSubsystem;
-
-            ComposedSubsystem composedSubsystem;
             boost::shared_ptr<VideoContext> videoContext;
             boost::shared_ptr<AsyncLoader> asyncLoader;
             boost::shared_ptr<TexturesCache> texturesCache;
