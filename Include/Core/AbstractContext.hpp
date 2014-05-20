@@ -15,6 +15,10 @@ namespace Core {
 
     class AbstractContext {
         public:
+            AbstractContext() = default;
+            AbstractContext(const AbstractContext&) = delete;
+            AbstractContext& operator=(const AbstractContext&) = delete;
+
             virtual ~AbstractContext() {}
 
             virtual bool isReady() const =0;

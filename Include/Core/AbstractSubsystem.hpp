@@ -15,6 +15,10 @@ namespace Core {
 
     class AbstractSubsystem {
         public:
+            AbstractSubsystem() = default;
+            AbstractSubsystem(const AbstractSubsystem&) = delete;
+            AbstractSubsystem& operator=(const AbstractSubsystem&) = delete;
+
             virtual ~AbstractSubsystem() {}
 
             virtual bool isInitialized() const =0;
