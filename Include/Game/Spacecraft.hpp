@@ -12,7 +12,7 @@
 #include <boost/shared_ptr.hpp>
 #include <Common/Logging.hpp>
 #include <Core/VideoContext.hpp>
-#include <Core/Texture.hpp>
+#include <Core/TextureAsset.hpp>
 #include <Physics/RigidBody.hpp>
 #include <Physics/CircleShape.hpp>
 
@@ -22,7 +22,7 @@ namespace Game {
 
     class Spacecraft {
         public:
-            Spacecraft(boost::shared_ptr<Core::Texture> texture);
+            Spacecraft(boost::shared_ptr<Core::TextureAsset> textureAsset);
 
             void setLeftEngineThrust(float thrust);
             void setRightEngineThrust(float thrust);
@@ -33,7 +33,7 @@ namespace Game {
 
         private:
             Common::Logger logger;
-            boost::shared_ptr<Core::Texture> texture;
+            boost::shared_ptr<Core::TextureAsset> textureAsset;
             Physics::CircleShape shape;
             Physics::RigidBody body;
     };

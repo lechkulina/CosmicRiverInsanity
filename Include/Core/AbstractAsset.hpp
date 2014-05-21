@@ -9,9 +9,18 @@
 #ifndef ABSTRACTASSET_HPP_
 #define ABSTRACTASSET_HPP_
 
+#include <boost/parameter.hpp>
+
 namespace Cosmic {
 
 namespace Core {
+
+    namespace Keywords {
+
+        BOOST_PARAMETER_NAME((assetName, Tags) assetName)
+        BOOST_PARAMETER_NAME((assetPath, Tags) assetPath)
+
+    }
 
     class AbstractAsset {
         public:
@@ -20,6 +29,7 @@ namespace Core {
             AbstractAsset& operator=(const AbstractAsset&) = delete;
 
             virtual ~AbstractAsset() {};
+
             virtual bool isLoaded() const =0;
     };
 

@@ -22,8 +22,8 @@
 #include <Core/TexturesCache.hpp>
 
 //!!! TEST
-#include <Core/TextureFileRequest.hpp>
-#include <Core/Texture.hpp>
+#include <Core/TextureRequest.hpp>
+#include <Core/TextureAsset.hpp>
 #include <Core/Music.hpp>
 #include <Game/Spacecraft.hpp>
 //!!! TEST
@@ -60,7 +60,7 @@ namespace Core {
             boost::shared_ptr<TexturesCache> texturesCache;
 
             //!!! TEST
-            boost::shared_ptr<Texture> texture;
+            boost::shared_ptr<TextureAsset> textureAsset;
             boost::shared_ptr<Music> music;
             boost::shared_ptr<Cosmic::Game::Spacecraft> spacecraft;
             //!!! TEST

@@ -11,11 +11,11 @@
 #include <Physics/Vector2D.hpp>
 #include <Physics/Matrix2D.hpp>
 
-Cosmic::Game::Spacecraft::Spacecraft(boost::shared_ptr<Core::Texture> texture) :
+Cosmic::Game::Spacecraft::Spacecraft(boost::shared_ptr<Core::TextureAsset> textureAsset) :
     logger(
         boost::log::keywords::severity = Common::Severity::Trace,
         boost::log::keywords::channel = Common::Channel::Game),
-    texture(texture),
+    textureAsset(textureAsset),
     shape(20.0f, 3.0f),
     body(shape) {
 
@@ -38,10 +38,10 @@ void Cosmic::Game::Spacecraft::update(int deltaTime) {
 }
 
 void Cosmic::Game::Spacecraft::render(boost::shared_ptr<Core::VideoContext> videoContext) {
-    const int x = body.getPosition().x - texture->getWidth() / 2 + 400;
-    const int y = body.getPosition().y*-1 - texture->getHeight() / 2 + 300;
+    const int x = body.getPosition().x - textureAsset->getWidth() / 2 + 400;
+    const int y = body.getPosition().y*-1 - textureAsset->getHeight() / 2 + 300;
     const float orientation = Physics::degrees(body.getOrientation());
-    texture->copyRotated(videoContext, x, y, orientation);
+    textureAsset->copyRotated(videoContext, x, y, orientation);
 
 
 

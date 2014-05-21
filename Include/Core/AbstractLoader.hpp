@@ -9,7 +9,9 @@
 #ifndef ABSTRACTLOADER_HPP_
 #define ABSTRACTLOADER_HPP_
 
+#include <boost/shared_ptr.hpp>
 #include <Common/SignalAdapter.hpp>
+#include <Core/AbstractAsset.hpp>
 #include <Core/AbstractRequest.hpp>
 
 namespace Cosmic {

@@ -24,6 +24,8 @@ namespace Core {
 
     namespace Keywords {
 
+        BOOST_PARAMETER_NAME((videoContext, Tags) videoContext)
+
         BOOST_PARAMETER_NAME((windowTitle, Tags) windowTitle)
         BOOST_PARAMETER_NAME((windowGeometry, Tags) windowGeometry)
 

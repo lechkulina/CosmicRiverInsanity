@@ -71,15 +71,15 @@ Cosmic::Core::Game::Game() :
     asyncLoader = boost::make_shared<AsyncLoader>();
    //texturesCache = boost::make_shared<TexturesCache>(asyncLoader);
 
-    asyncLoader->pushRequest(boost::make_shared<TextureFileRequest>(videoContext, "player-ship", "./playerShip1_green.png"));
+    asyncLoader->pushRequest(TextureRequest::make(videoContext, "player-ship", "./playerShip1_green.png"));
     asyncLoader->execute();
 
     //texturesCache->request(videoContext, "player-ship", "./playerShip1_green.png");
 
 
-    texture = boost::make_shared<Texture>(videoContext, "./playerShip1_green.png");
+    textureAsset = boost::make_shared<TextureAsset>(videoContext, "./playerShip1_green.png");
     music = boost::make_shared<Music>("./ObservingTheStar.ogg");
-    spacecraft = boost::make_shared<Cosmic::Game::Spacecraft>(texture);
+    spacecraft = boost::make_shared<Cosmic::Game::Spacecraft>(textureAsset);
 }
 
 Cosmic::Core::Game::~Game() {

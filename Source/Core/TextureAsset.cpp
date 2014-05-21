@@ -1,15 +1,15 @@
 /*
- * Texture.cpp
+ * TextureAsset.cpp
  *
  * Created on: 2 maj 2014
  * Author: Lech Kulina
  * E-Mail: kulinalech@gmail.com
  */
 
-#include <Core/Texture.hpp>
+#include <Core/TextureAsset.hpp>
 
-Cosmic::Core::Texture::Texture(boost::shared_ptr<VideoContext> videoContext,
-                                const boost::filesystem::path& assetPath) :
+Cosmic::Core::TextureAsset::TextureAsset(boost::shared_ptr<VideoContext> videoContext,
+                                        const boost::filesystem::path& assetPath) :
     logger(
         boost::log::keywords::severity = Common::Severity::Trace,
         boost::log::keywords::channel = Common::Channel::Resources),
@@ -49,7 +49,7 @@ Cosmic::Core::Texture::Texture(boost::shared_ptr<VideoContext> videoContext,
         << "Texture " << assetPath.string() << " loaded.";
 }
 
-Cosmic::Core::Texture::~Texture() {
+Cosmic::Core::TextureAsset::~TextureAsset() {
     BOOST_LOG_FUNCTION();
 
     if (!isLoaded()) {
@@ -60,19 +60,19 @@ Cosmic::Core::Texture::~Texture() {
     SDL_DestroyTexture(texture);
 }
 
-bool Cosmic::Core::Texture::isLoaded() const {
+bool Cosmic::Core::TextureAsset::isLoaded() const {
     return texture != nullptr;
 }
 
-int Cosmic::Core::Texture::getWidth() const {
+int Cosmic::Core::TextureAsset::getWidth() const {
     return width;
 }
 
-int Cosmic::Core::Texture::getHeight() const {
+int Cosmic::Core::TextureAsset::getHeight() const {
     return height;
 }
 
-void Cosmic::Core::Texture::copy(boost::shared_ptr<VideoContext> videoContext, int x, int y) {
+void Cosmic::Core::TextureAsset::copy(boost::shared_ptr<VideoContext> videoContext, int x, int y) {
     BOOST_LOG_FUNCTION();
 
     const SDL_Rect destination = {x, y, width, height};
@@ -82,7 +82,7 @@ void Cosmic::Core::Texture::copy(boost::shared_ptr<VideoContext> videoContext, i
     }
 }
 
-void Cosmic::Core::Texture::copyRotated(boost::shared_ptr<VideoContext> videoContext, int x, int y, double angle) {
+void Cosmic::Core::TextureAsset::copyRotated(boost::shared_ptr<VideoContext> videoContext, int x, int y, double angle) {
     BOOST_LOG_FUNCTION();
 
     const SDL_Rect destination = {x, y, width, height};
@@ -92,6 +92,6 @@ void Cosmic::Core::Texture::copyRotated(boost::shared_ptr<VideoContext> videoCon
     }
 }
 
-Cosmic::Core::Texture::operator SDL_Texture*() {
+Cosmic::Core::TextureAsset::operator SDL_Texture*() {
     return texture;
 }

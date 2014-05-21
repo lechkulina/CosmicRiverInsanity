@@ -8,15 +8,10 @@
 
 #include <Core/AbstractRequest.hpp>
 
-Cosmic::Core::AbstractRequest::AbstractRequest(const std::string& assetName) :
+Cosmic::Core::AbstractRequest::AbstractRequest() :
     onResponseReady(responseReady),
-    onResponseFailed(responseFailed),
-    assetName(assetName) {
+    onResponseFailed(responseFailed) {
 }
 
 Cosmic::Core::AbstractRequest::~AbstractRequest() {
-}
-
-const std::string& Cosmic::Core::AbstractRequest::getAssetName() const {
-    return assetName;
 }

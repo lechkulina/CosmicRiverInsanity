@@ -7,7 +7,7 @@
  */
 
 #include <Core/TexturesCache.hpp>
-#include <Core/TextureFileRequest.hpp>
+#include <Core/TextureRequest.hpp>
 /*
 Cosmic::Core::TexturesCache::TexturesCache::TexturesCache(boost::shared_ptr<AbstractLoader> loader) :
     logger(

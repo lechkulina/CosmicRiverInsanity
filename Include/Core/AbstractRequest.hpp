@@ -9,6 +9,9 @@
 #ifndef ABSTRACTREQUEST_HPP_
 #define ABSTRACTREQUEST_HPP_
 
+#include <string>
+#include <boost/shared_ptr.hpp>
+#include <boost/filesystem.hpp>
 #include <Common/SignalAdapter.hpp>
 #include <Core/AbstractAsset.hpp>
 
@@ -25,21 +28,19 @@ namespace Core {
             OnResponseReady onResponseReady;
             OnResponseFailed onResponseFailed;
 
-            explicit AbstractRequest(const std::string& assetName);
+            AbstractRequest();
             AbstractRequest(const AbstractRequest&) = delete;
             AbstractRequest& operator=(const AbstractRequest&) = delete;
 
             virtual ~AbstractRequest();
 
-            const std::string& getAssetName() const;
+            virtual const std::string& getAssetName() const =0;
+            virtual const boost::filesystem::path& getAssetPath() const =0;
             virtual void execute() =0;
 
         protected:
             OnResponseReady::Signal responseReady;
             OnResponseFailed::Signal responseFailed;
-
-        private:
-            std::string assetName;
     };
 
 }
