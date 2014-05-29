@@ -11,6 +11,7 @@
 
 #include <SDL.h>
 #include <boost/shared_ptr.hpp>
+#include <boost/weak_ptr.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/parameter.hpp>
 #include <Common/Logging.hpp>
@@ -25,11 +26,14 @@ namespace Core {
     namespace Keywords {
 
         BOOST_PARAMETER_NAME((videoContext, Tags) videoContext)
-
         BOOST_PARAMETER_NAME((windowTitle, Tags) windowTitle)
         BOOST_PARAMETER_NAME((windowGeometry, Tags) windowGeometry)
 
     }
+
+    class VideoContext;
+    typedef boost::shared_ptr<VideoContext> VideoContextSharedPtr;
+    typedef boost::weak_ptr<VideoContext> VideoContextWeakPtr;
 
     class VideoContext : public AbstractContext {
         public:
