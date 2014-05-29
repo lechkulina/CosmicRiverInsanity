@@ -17,8 +17,10 @@ Cosmic::Core::LoggingSubsystem::LoggingSubsystem(const std::string& fileName, in
     using namespace boost::log;
 
     //add global and thread specific attributes
-    core::get()->add_global_attribute("TimeStamp", attributes::local_clock());
-    core::get()->add_global_attribute("Scope", attributes::named_scope());
+    shared_ptr<Core> core = core::get();
+    core->add_global_attribute("TimeStamp", attributes::local_clock());
+    core->add_global_attribute("ThreadId", attributes::current_thread_id());
+    core->add_global_attribute("Scope", attributes::named_scope());
 
     //create sink backend
     shared_ptr<TextFileBackend> backend = make_shared<TextFileBackend>(
@@ -30,24 +32,23 @@ Cosmic::Core::LoggingSubsystem::LoggingSubsystem(const std::string& fileName, in
     sink = make_shared<SynchronousSink>(backend);
     sink->set_formatter(
         expressions::stream
-            << expressions::format_date_time<boost::posix_time::ptime>("TimeStamp", "%Y-%m-%d %H:%M:%S.%f ")
-            << expressions::if_(expressions::has_attr("Scope")) [
+            << expressions::format_date_time<posix_time::ptime>("TimeStamp", "%Y-%m-%d %H:%M:%S.%f ")
+            << expressions::attr<attributes::current_thread_id::value_type>("ThreadId")
+            /*<< expressions::if_(expressions::has_attr("Scope")) [
                  expressions::stream
                      << expressions::format_named_scope("Scope", keywords::format = "%n", keywords::depth = 1) << " "
-            ]
+            ]*/
             << " (" << Common::severity << ") "
             << expressions::smessage
     );
 
     //finally add sink so we could start logging some crazy shit...
-    core::get()->add_sink(sink);
+    core->add_sink(sink);
 }
 
 Cosmic::Core::LoggingSubsystem::~LoggingSubsystem() {
-    using namespace boost::log;
-
     //remove our sink from logging core, Boost.Log should handle the rest
-    core::get()->remove_sink(sink);
+    boost::log::core::get()->remove_sink(sink);
 }
 
 bool Cosmic::Core::LoggingSubsystem::isInitialized() const {
