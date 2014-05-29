@@ -17,5 +17,5 @@ Cosmic::Core::AbstractRequest::connectToFinished(const FinishedSlot& finishedSlo
 }
 
 void Cosmic::Core::AbstractRequest::disconnectFromFinished(const FinishedSlot& finishedSlot) {
-    return finishedSignal.disconnect(finishedSlot);
+    //finishedSignal.disconnect(finishedSlot);
 }

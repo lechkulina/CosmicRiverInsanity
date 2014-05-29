@@ -10,7 +10,13 @@
 #define ASYNCLOADER_HPP_
 
 #include <list>
+#include <boost/shared_ptr.hpp>
+#include <boost/weak_ptr.hpp>
+#include <boost/make_shared.hpp>
+#include <boost/parameter.hpp>
+#include <boost/thread.hpp>
 #include <Common/Logging.hpp>
+#include <Common/SignalsQueue.hpp>
 #include <Core/AbstractLoader.hpp>
 #include <Core/AbstractRequest.hpp>
 
@@ -18,23 +24,34 @@ namespace Cosmic {
 
 namespace Core {
 
+    class AsyncLoader;
+    typedef boost::shared_ptr<AsyncLoader> AsyncLoaderSharedPtr;
+    typedef boost::weak_ptr<AsyncLoader> AsyncLoaderWeakPtr;
+
     class AsyncLoader : public AbstractLoader {
         public:
-            AsyncLoader();
+            AsyncLoader(Common::SignalsQueue& signalsQueue);
             virtual ~AsyncLoader();
 
-            virtual bool pushRequest(boost::shared_ptr<AbstractRequest> request);
-            virtual bool hasPendingRequests() const;
-            virtual void execute();
+            virtual bool pushRequest(AbstractRequestSharedPtr request);
+            virtual bool hasRequests() const;
+
+            virtual void start();
+            virtual void stop();
 
         private:
-            typedef std::list<boost::shared_ptr<AbstractRequest> > Requests;
+            typedef std::list<AbstractRequestSharedPtr> Requests;
 
             Common::Logger logger;
-            Requests pendingRequests;
+            Common::SignalsQueue& signalsQueue;
+            bool isRunning;
+            Requests requests;
+            boost::thread thread;
+            mutable boost::mutex mutex;
+            boost::condition_variable condition;
 
-            void responseReady(const AbstractRequest& request, boost::shared_ptr<AbstractAsset> asset);
-            void responseFailed(const AbstractRequest& request);
+            void executeRequests();
+            void finished(AbstractAssetSharedPtr asset);
     };
 
 }
