@@ -16,7 +16,7 @@
 #include <Core/AbstractLoader.hpp>
 #include <Core/AbstractCache.hpp>
 #include <Core/VideoContext.hpp>
-#include <Core/TextureAsset.hpp>
+#include <Core/Texture.hpp>
 
 namespace Cosmic {
 

@@ -1,5 +1,5 @@
 /*
- * TextureAsset.cpp
+ * Texture.cpp
  *
  * Created on: 2 maj 2014
  * Author: Lech Kulina
