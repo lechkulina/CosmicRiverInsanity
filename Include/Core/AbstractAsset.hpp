@@ -9,18 +9,18 @@
 #ifndef ABSTRACTASSET_HPP_
 #define ABSTRACTASSET_HPP_
 
-#include <boost/parameter.hpp>
+#include <string>
+#include <boost/shared_ptr.hpp>
+#include <boost/weak_ptr.hpp>
+#include <boost/filesystem.hpp>
 
 namespace Cosmic {
 
 namespace Core {
 
-    namespace Keywords {
-
-        BOOST_PARAMETER_NAME((assetName, Tags) assetName)
-        BOOST_PARAMETER_NAME((assetPath, Tags) assetPath)
-
-    }
+    class AbstractAsset;
+    typedef boost::shared_ptr<AbstractAsset> AbstractAssetSharedPtr;
+    typedef boost::weak_ptr<AbstractAsset> AbstractAssetWeakPr;
 
     class AbstractAsset {
         public:
@@ -28,8 +28,10 @@ namespace Core {
             AbstractAsset(const AbstractAsset&) = delete;
             AbstractAsset& operator=(const AbstractAsset&) = delete;
 
-            virtual ~AbstractAsset() {};
+            virtual ~AbstractAsset();
 
+            virtual const std::string& getName() const =0;
+            virtual const boost::filesystem::path& getPath() const =0;
             virtual bool isLoaded() const =0;
     };
 
