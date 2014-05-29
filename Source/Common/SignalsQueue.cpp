@@ -8,7 +8,7 @@
 
 #include <Common/SignalsQueue.hpp>
 
-void Cosmic::Common::SignalsQueue::dispatch(const Callback& callback) {
+void Cosmic::Common::SignalsQueue::push(const Callback& callback) {
     boost::lock_guard<boost::mutex> guard(mutex);
     callbacks.push_back(callback);
 }
@@ -20,11 +20,10 @@ bool Cosmic::Common::SignalsQueue::poll() {
     }
     while(not callbacks.empty()) {
         Callback& callback = callbacks.front();
-        callbacks.pop_front();
-        if (callback.empty()) {
-            continue;
+        if (not callback.empty()) {
+            callback();
         }
-        callback();
+        callbacks.pop_front();
     }
     return true;
 }

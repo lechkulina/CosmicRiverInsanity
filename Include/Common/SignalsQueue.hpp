@@ -21,7 +21,7 @@ namespace Common {
         public:
             typedef boost::function<void ()> Callback;
 
-            void dispatch(const Callback& callback);
+            void push(const Callback& callback);
             bool poll();
 
         private:
