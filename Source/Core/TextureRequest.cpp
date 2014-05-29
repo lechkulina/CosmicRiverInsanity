@@ -7,28 +7,15 @@
  */
 
 #include <Core/TextureRequest.hpp>
-#include <Core/TextureAsset.hpp>
+#include <Core/Texture.hpp>
 
-Cosmic::Core::TextureRequest::TextureRequest(boost::shared_ptr<VideoContext> videoContext, const std::string& assetName,
-                                                 const boost::filesystem::path& assetPath) :
+Cosmic::Core::TextureRequest::TextureRequest(VideoContextSharedPtr videoContext, const std::string& name,
+                                                 const boost::filesystem::path& path) :
     videoContext(videoContext),
-    assetName(assetName),
-    assetPath(assetPath) {
-}
-
-const std::string& Cosmic::Core::TextureRequest::getAssetName() const {
-    return assetName;
-}
-
-const boost::filesystem::path& Cosmic::Core::TextureRequest::getAssetPath() const {
-    return assetPath;
+    name(name),
+    path(path) {
 }
 
 void Cosmic::Core::TextureRequest::execute() {
-    boost::shared_ptr<TextureAsset> textureAsset =  TextureAsset::make(videoContext, assetPath);
-    if (textureAsset->isLoaded()) {
-        responseReady(*this, textureAsset);
-    } else {
-        responseFailed(*this);
-    }
+    finishedSignal(Texture::make(videoContext, name, path));
 }

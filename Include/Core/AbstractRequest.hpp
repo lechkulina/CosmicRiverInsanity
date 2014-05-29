@@ -9,38 +9,39 @@
 #ifndef ABSTRACTREQUEST_HPP_
 #define ABSTRACTREQUEST_HPP_
 
-#include <string>
 #include <boost/shared_ptr.hpp>
-#include <boost/filesystem.hpp>
-#include <Common/SignalAdapter.hpp>
+#include <boost/weak_ptr.hpp>
+#include <boost/signals2.hpp>
 #include <Core/AbstractAsset.hpp>
 
 namespace Cosmic {
 
 namespace Core {
 
+    class AbstractRequest;
+    typedef boost::shared_ptr<AbstractRequest> AbstractRequestSharedPtr;
+    typedef boost::weak_ptr<AbstractRequest> AbstractRequestWeakPtr;
+
     //! Base class for all assets requests
     class AbstractRequest {
+        protected:
+            typedef boost::signals2::signal<void (AbstractAssetSharedPtr)> FinishedSignal;
+
+            FinishedSignal finishedSignal;
+
         public:
-            typedef Common::SignalAdapter<void (const AbstractRequest&, boost::shared_ptr<AbstractAsset>)> OnResponseReady;
-            typedef Common::SignalAdapter<void (const AbstractRequest&)> OnResponseFailed;
+            typedef FinishedSignal::slot_type FinishedSlot;
 
-            OnResponseReady onResponseReady;
-            OnResponseFailed onResponseFailed;
-
-            AbstractRequest();
+            AbstractRequest() = default;
             AbstractRequest(const AbstractRequest&) = delete;
             AbstractRequest& operator=(const AbstractRequest&) = delete;
 
             virtual ~AbstractRequest();
 
-            virtual const std::string& getAssetName() const =0;
-            virtual const boost::filesystem::path& getAssetPath() const =0;
-            virtual void execute() =0;
+            virtual boost::signals2::connection connectToFinished(const FinishedSlot& finishedSlot);
+            virtual void disconnectFromFinished(const FinishedSlot& finishedSlot);
 
-        protected:
-            OnResponseReady::Signal responseReady;
-            OnResponseFailed::Signal responseFailed;
+            virtual void execute() =0;
     };
 
 }

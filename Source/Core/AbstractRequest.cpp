@@ -8,10 +8,14 @@
 
 #include <Core/AbstractRequest.hpp>
 
-Cosmic::Core::AbstractRequest::AbstractRequest() :
-    onResponseReady(responseReady),
-    onResponseFailed(responseFailed) {
+Cosmic::Core::AbstractRequest::~AbstractRequest() {
 }
 
-Cosmic::Core::AbstractRequest::~AbstractRequest() {
+boost::signals2::connection
+Cosmic::Core::AbstractRequest::connectToFinished(const FinishedSlot& finishedSlot) {
+    return finishedSignal.connect(finishedSlot);
+}
+
+void Cosmic::Core::AbstractRequest::disconnectFromFinished(const FinishedSlot& finishedSlot) {
+    return finishedSignal.disconnect(finishedSlot);
 }
