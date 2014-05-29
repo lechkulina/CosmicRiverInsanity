@@ -12,6 +12,7 @@
 #include <SDL.h>
 #include <boost/shared_ptr.hpp>
 #include <Common/Logging.hpp>
+#include <Common/SignalsQueue.hpp>
 #include <Core/AbstractSubsystem.hpp>
 #include <Core/LoggingSubsystem.hpp>
 #include <Core/VideoSubsystem.hpp>
@@ -23,7 +24,7 @@
 
 //!!! TEST
 #include <Core/TextureRequest.hpp>
-#include <Core/TextureAsset.hpp>
+#include <Core/Texture.hpp>
 #include <Core/Music.hpp>
 #include <Game/Spacecraft.hpp>
 //!!! TEST
@@ -50,6 +51,7 @@ namespace Core {
 
         private:
             Common::Logger logger;
+            Common::SignalsQueue signalsQueue;
             GameState gameState;
             boost::shared_ptr<LoggingSubsystem> loggingSubsystem;
             boost::shared_ptr<VideoSubsystem> videoSubsystem;
@@ -60,11 +62,12 @@ namespace Core {
             boost::shared_ptr<TexturesCache> texturesCache;
 
             //!!! TEST
-            boost::shared_ptr<TextureAsset> textureAsset;
+            boost::shared_ptr<Texture> texture;
             boost::shared_ptr<Music> music;
             boost::shared_ptr<Cosmic::Game::Spacecraft> spacecraft;
             //!!! TEST
 
+            void finished(AbstractAssetSharedPtr asset);
             void handleEvent(const SDL_Event& event);
             void updateFrame(float deltaTime);
             void renderFrame();

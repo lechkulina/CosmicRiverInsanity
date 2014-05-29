@@ -9,6 +9,7 @@
 #include <SDL.h>
 #include <cstdlib>
 #include <boost/make_shared.hpp>
+#include <boost/bind.hpp>
 #include <Core/Game.hpp>
 
 Cosmic::Core::Game::Game() :
@@ -68,18 +69,29 @@ Cosmic::Core::Game::Game() :
     }
 
     //create loader and cache
-    asyncLoader = boost::make_shared<AsyncLoader>();
-   //texturesCache = boost::make_shared<TexturesCache>(asyncLoader);
+    asyncLoader = boost::make_shared<AsyncLoader>(signalsQueue);
+    asyncLoader->start();
+    asyncLoader->connectToFinished(boost::bind(&Game::finished, this, _1));
+
+    //texturesCache = boost::make_shared<TexturesCache>(asyncLoader);
 
     asyncLoader->pushRequest(TextureRequest::make(videoContext, "player-ship", "./playerShip1_green.png"));
-    asyncLoader->execute();
+    asyncLoader->pushRequest(TextureRequest::make(videoContext, "player-ship2", "./playerShip2_red.png"));
+    asyncLoader->pushRequest(TextureRequest::make(videoContext, "player-ship3", "./playerShip3_red.png"));
+    asyncLoader->pushRequest(TextureRequest::make(videoContext, "ufo-green", "./ufoGreen.png"));
 
     //texturesCache->request(videoContext, "player-ship", "./playerShip1_green.png");
 
 
-    textureAsset = boost::make_shared<TextureAsset>(videoContext, "./playerShip1_green.png");
+    texture = boost::make_shared<Texture>(videoContext, "PLAYER-SHIP", "./playerShip1_green.png");
     music = boost::make_shared<Music>("./ObservingTheStar.ogg");
-    spacecraft = boost::make_shared<Cosmic::Game::Spacecraft>(textureAsset);
+    spacecraft = boost::make_shared<Cosmic::Game::Spacecraft>(texture);
+}
+
+
+void Cosmic::Core::Game::finished(AbstractAssetSharedPtr asset) {
+    BOOST_LOG_FUNCTION();
+    BOOST_LOG(logger) << "FINISHED name=" << asset->getName() << " path=" << asset->getPath() << " isLoaded=" << asset->isLoaded();
 }
 
 Cosmic::Core::Game::~Game() {
@@ -113,23 +125,28 @@ int Cosmic::Core::Game::execute() {
         SDL_Event event;
         if (SDL_PollEvent(&event) > 0) {
             handleEvent(event);
-        } else {
-            //avoid spiral of death
-            const float currentTime = SDL_GetTicks();
-            accumulatedTime += currentTime - startTime;
-            if (accumulatedTime > maxAccumulatedTime) {
-                accumulatedTime = maxAccumulatedTime;
-            }
-            startTime = currentTime;
-
-            while(accumulatedTime > deltaTime) {
-                updateFrame(deltaTime);
-                accumulatedTime -= deltaTime;
-            }
-
-            renderFrame();
-            resetFrame();
+            continue;
         }
+
+        if (signalsQueue.poll()) {
+            continue;
+        }
+
+        //avoid spiral of death
+        const float currentTime = SDL_GetTicks();
+        accumulatedTime += currentTime - startTime;
+        if (accumulatedTime > maxAccumulatedTime) {
+            accumulatedTime = maxAccumulatedTime;
+        }
+        startTime = currentTime;
+
+        while(accumulatedTime > deltaTime) {
+            updateFrame(deltaTime);
+            accumulatedTime -= deltaTime;
+        }
+
+        renderFrame();
+        resetFrame();
     }
 
     BOOST_LOG(logger) << "Stop main loop";
