@@ -16,6 +16,14 @@ Cosmic::Core::TextureRequest::TextureRequest(VideoContextSharedPtr videoContext,
     path(path) {
 }
 
+const std::string& Cosmic::Core::TextureRequest::getName() const {
+    return name;
+}
+
+const boost::filesystem::path& Cosmic::Core::TextureRequest::getPath() const {
+    return path;
+}
+
 void Cosmic::Core::TextureRequest::execute() {
     finishedSignal(Texture::make(videoContext, name, path));
 }
