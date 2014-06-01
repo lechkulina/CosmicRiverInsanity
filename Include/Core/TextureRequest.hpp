@@ -34,6 +34,7 @@ namespace Core {
             TextureRequest(VideoContextSharedPtr videoContext, const std::string& name,
                                const boost::filesystem::path& path);
 
+            virtual bool isValid() const;
             virtual const std::string& getName() const;
             virtual const boost::filesystem::path& getPath() const;
             virtual void execute();

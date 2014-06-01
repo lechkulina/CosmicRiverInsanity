@@ -41,6 +41,7 @@ namespace Core {
             virtual boost::signals2::connection connectToFinished(const FinishedSlot& finishedSlot);
             virtual void disconnectFromFinished(const FinishedSlot& finishedSlot);
 
+            virtual bool isValid() const =0;
             virtual const std::string& getName() const =0;
             virtual const boost::filesystem::path& getPath() const =0;
             virtual void execute() =0;

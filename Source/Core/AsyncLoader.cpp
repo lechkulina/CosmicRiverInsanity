@@ -25,20 +25,34 @@ Cosmic::Core::AsyncLoader::~AsyncLoader() {
 bool Cosmic::Core::AsyncLoader::pushRequest(AbstractRequestSharedPtr request) {
     BOOST_LOG_FUNCTION();
 
+    if (!request) {
+        BOOST_LOG_SEV(logger, Common::Severity::Error)
+            << "Empty request was passed to the loader - ignoring it.";
+        return false;
+    }
+
+    //we have to ensure that only valid requests are stored in pending requests queue
+    const std::string& name = request->getName();
+    if (!request->isValid()) {
+        BOOST_LOG_SEV(logger, Common::Severity::Debug)
+            << "Request for asset " << name << " is not valid - ignoring it.";
+        return false;
+    }
+
     boost::lock_guard<boost::mutex> guard(mutex);
 
     //check for duplicates
     for (AbstractRequestSharedPtr currentRequest : requests) {
-        if (currentRequest->getName() == request->getName()) {
+        if (currentRequest->getName() == name) {
             BOOST_LOG_SEV(logger, Common::Severity::Debug)
-                << "Request for asset " << request->getName() << " found in pending requests queue - ignoring it.";
+                << "Request for asset " << name << " found in pending requests queue - ignoring it.";
             return false;
         }
     }
 
     //push this request to our pending requests queue
     BOOST_LOG_SEV(logger, Common::Severity::Debug)
-        << "Pushing request for asset " << request->getName() << " to the pending requests queue.";
+        << "Pushing request for asset " << name << " to the pending requests queue.";
     request->connectToFinished(boost::bind(&AsyncLoader::finished, this, _1));
     requests.push_back(request);
     condition.notify_all();
@@ -48,7 +62,7 @@ bool Cosmic::Core::AsyncLoader::pushRequest(AbstractRequestSharedPtr request) {
 
 bool Cosmic::Core::AsyncLoader::hasRequests() const {
     boost::lock_guard<boost::mutex> guard(mutex);
-    return not requests.empty();
+    return !requests.empty();
 }
 
 void Cosmic::Core::AsyncLoader::start() {

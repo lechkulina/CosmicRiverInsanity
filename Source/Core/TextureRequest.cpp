@@ -16,6 +16,10 @@ Cosmic::Core::TextureRequest::TextureRequest(VideoContextSharedPtr videoContext,
     path(path) {
 }
 
+bool Cosmic::Core::TextureRequest::isValid() const {
+    return !name.empty() && !path.empty() && boost::filesystem::exists(path);
+}
+
 const std::string& Cosmic::Core::TextureRequest::getName() const {
     return name;
 }
