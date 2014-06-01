@@ -10,7 +10,7 @@
 #include <boost/ref.hpp>
 #include <Core/AsyncLoader.hpp>
 
-Cosmic::Core::AsyncLoader::AsyncLoader(Common::SignalsQueue& signalsQueue) :
+Cosmic::Core::AsyncLoader::AsyncLoader(Common::SignalsQueue* signalsQueue /*= nullptr*/) :
     logger(
         boost::log::keywords::severity = Common::Severity::Trace,
         boost::log::keywords::channel = Common::Channel::Resources),
@@ -31,8 +31,7 @@ bool Cosmic::Core::AsyncLoader::pushRequest(AbstractRequestSharedPtr request) {
     for (AbstractRequestSharedPtr currentRequest : requests) {
         if (currentRequest->getName() == request->getName()) {
             BOOST_LOG_SEV(logger, Common::Severity::Debug)
-                << "Request for asset " << request->getName() << " from " << request->getPath()
-                << " found in pending requests queue, ignoring it.";
+                << "Request for asset " << request->getName() << " found in pending requests queue - ignoring it.";
             return false;
         }
     }
@@ -83,7 +82,13 @@ void Cosmic::Core::AsyncLoader::executeRequests() {
     boost::this_thread::disable_interruption interruption;
     boost::unique_lock<boost::mutex> lock(mutex);
 
-    while(isRunning) {
+    while(true) {
+        //check if we were requested to stopped this thread
+        if (!isRunning) {
+            BOOST_LOG(logger) << "Stopping requests thread.";
+            break;
+        }
+
         //check if there are some pending requests
         if (requests.empty()) {
             BOOST_LOG(logger) << "Pending requests queue is empty - waiting for some new requests.";
@@ -91,13 +96,10 @@ void Cosmic::Core::AsyncLoader::executeRequests() {
             continue;
         }
 
-        //fetch the first one - we are working in FIFO order here
+        //fetch and execute the first one - we are working in FIFO order here
         AbstractRequestSharedPtr request = requests.front();
         requests.pop_front();
-
-        //execute it
-        BOOST_LOG(logger)
-            << "Going to execute request for asset " << request->getName() << " from " << request->getPath();
+        BOOST_LOG(logger) << "Executing request for asset " << request->getName() << ".";
         request->execute();
     }
 }
@@ -105,10 +107,11 @@ void Cosmic::Core::AsyncLoader::executeRequests() {
 void Cosmic::Core::AsyncLoader::finished(AbstractAssetSharedPtr asset) {
     BOOST_LOG_FUNCTION();
 
-    if (asset->isLoaded()) {
-        BOOST_LOG(logger) << "Asset " << asset->getName() << " from " << asset->getPath() << " is ready.";
+    //we are always emitting signals here - it is cache and/or other object responsibility to check if it was successful or not
+    BOOST_LOG(logger) << "Request for asset " << asset->getName() << " finished.";
+    if (signalsQueue) {
+        signalsQueue->push(boost::bind(boost::ref(finishedSignal), asset));
     } else {
-        BOOST_LOG(logger) << "Failed to load asset " << asset->getName() << " from " << asset->getPath() << ".";
+        finishedSignal(asset);
     }
-    signalsQueue.push(boost::bind(boost::ref(finishedSignal), asset));
 }

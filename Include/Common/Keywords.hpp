@@ -19,6 +19,7 @@ namespace Core {
 
         BOOST_PARAMETER_NAME((name, Tags) name)
         BOOST_PARAMETER_NAME((path, Tags) path)
+        BOOST_PARAMETER_NAME((signalsQueue, Tags) signalsQueue)
 
     }
 

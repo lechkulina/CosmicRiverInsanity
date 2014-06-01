@@ -16,6 +16,7 @@
 #include <boost/parameter.hpp>
 #include <boost/thread.hpp>
 #include <Common/Logging.hpp>
+#include <Common/Keywords.hpp>
 #include <Common/SignalsQueue.hpp>
 #include <Core/AbstractLoader.hpp>
 #include <Core/AbstractRequest.hpp>
@@ -30,7 +31,7 @@ namespace Core {
 
     class AsyncLoader : public AbstractLoader {
         public:
-            AsyncLoader(Common::SignalsQueue& signalsQueue);
+            AsyncLoader(Common::SignalsQueue* signalsQueue = nullptr);
             virtual ~AsyncLoader();
 
             virtual bool pushRequest(AbstractRequestSharedPtr request);
@@ -39,11 +40,20 @@ namespace Core {
             virtual void start();
             virtual void stop();
 
+            BOOST_PARAMETER_MEMBER_FUNCTION(
+                (AsyncLoaderSharedPtr), static make, Keywords::Tags,
+                (optional
+                    (signalsQueue, (Common::SignalsQueue*), nullptr)
+                )
+            ) {
+                return boost::make_shared<AsyncLoader>(signalsQueue);
+            }
+
         private:
             typedef std::list<AbstractRequestSharedPtr> Requests;
 
             Common::Logger logger;
-            Common::SignalsQueue& signalsQueue;
+            Common::SignalsQueue* const signalsQueue;
             bool isRunning;
             Requests requests;
             boost::thread thread;
