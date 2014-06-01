@@ -31,9 +31,9 @@ namespace Core {
 
     class AsyncLoader : public AbstractLoader {
         public:
-            AsyncLoader(Common::SignalsQueue* signalsQueue = nullptr,
-                        bool ignoreInvalid = false,
-                        bool ignoreDuplicates = true);
+            explicit AsyncLoader(Common::SignalsQueue* signalsQueue = nullptr,
+                                    bool ignoreInvalid = false,
+                                    bool ignoreDuplicates = true);
             virtual ~AsyncLoader();
 
             virtual bool pushRequest(AbstractRequestSharedPtr request);

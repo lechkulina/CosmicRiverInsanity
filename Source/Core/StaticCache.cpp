@@ -8,10 +8,13 @@
 
 #include <Core/StaticCache.hpp>
 
-Cosmic::Core::StaticCache::StaticCache() :
+Cosmic::Core::StaticCache::StaticCache(bool ignoreInvalid /*= false*/,
+                                        bool ignoreDuplicates /*= true*/) :
     logger(
         boost::log::keywords::severity = Common::Severity::Trace,
-        boost::log::keywords::channel = Common::Channel::Resources) {
+        boost::log::keywords::channel = Common::Channel::Resources),
+    ignoreInvalid(ignoreInvalid),
+    ignoreDuplicates(ignoreDuplicates) {
 }
 
 bool Cosmic::Core::StaticCache::isEmpty() const {
@@ -29,21 +32,22 @@ bool Cosmic::Core::StaticCache::insert(AbstractAssetSharedPtr asset) {
 
     //we have to ensure that only valid assets are stored in cache
     const std::string& name = asset->getName();
-    if (!asset->isLoaded()) {
+    if (ignoreInvalid && !asset->isLoaded()) {
         BOOST_LOG_SEV(logger, Common::Severity::Debug)
             << "Asset " << name << " is not loaded - ignoring it.";
         return false;
     }
 
     //reject duplicates
-    BOOST_LOG(logger) << "Inserting asset " << name << " into cache.";
-    if (assets.find(name) != assets.end()) {
+    if (ignoreDuplicates && assets.find(name) != assets.end()) {
         BOOST_LOG_SEV(logger, Common::Severity::Debug)
             << "Asset " << name << " has already been inserted - ignoring it.";
         return false;
     }
 
+    BOOST_LOG(logger) << "Inserting asset " << name << " into cache.";
     assets.insert(std::make_pair(name, asset));
+
     return true;
 }
 

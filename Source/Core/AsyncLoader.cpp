@@ -97,7 +97,8 @@ void Cosmic::Core::AsyncLoader::stop() {
         return;
     }
 
-    //request stopping requests thread - we assuming here that after sending notification it will check the isRunning flag
+    //request stopping requests thread - we assuming here that after sending notification
+    //it will check the isRunning flag
     BOOST_LOG(logger) << "Stopping requests thread.";
     isRunning = false;
     condition.notify_all();
