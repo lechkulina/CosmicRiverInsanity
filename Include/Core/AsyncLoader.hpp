@@ -31,7 +31,9 @@ namespace Core {
 
     class AsyncLoader : public AbstractLoader {
         public:
-            AsyncLoader(Common::SignalsQueue* signalsQueue = nullptr);
+            AsyncLoader(Common::SignalsQueue* signalsQueue = nullptr,
+                        bool ignoreInvalid = false,
+                        bool ignoreDuplicates = true);
             virtual ~AsyncLoader();
 
             virtual bool pushRequest(AbstractRequestSharedPtr request);
@@ -44,9 +46,11 @@ namespace Core {
                 (AsyncLoaderSharedPtr), static make, Keywords::Tags,
                 (optional
                     (signalsQueue, (Common::SignalsQueue*), nullptr)
+                    (ignoreInvalid, (bool), false)
+                    (ignoreDuplicates, (bool), true)
                 )
             ) {
-                return boost::make_shared<AsyncLoader>(signalsQueue);
+                return boost::make_shared<AsyncLoader>(signalsQueue, ignoreInvalid, ignoreDuplicates);
             }
 
         private:
@@ -54,6 +58,8 @@ namespace Core {
 
             Common::Logger logger;
             Common::SignalsQueue* const signalsQueue;
+            bool ignoreInvalid;
+            bool ignoreDuplicates;
             bool isRunning;
             Requests requests;
             boost::thread thread;

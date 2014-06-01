@@ -10,11 +10,15 @@
 #include <boost/ref.hpp>
 #include <Core/AsyncLoader.hpp>
 
-Cosmic::Core::AsyncLoader::AsyncLoader(Common::SignalsQueue* signalsQueue /*= nullptr*/) :
+Cosmic::Core::AsyncLoader::AsyncLoader(Common::SignalsQueue* signalsQueue /*= nullptr*/,
+                                        bool ignoreInvalid /*= false*/,
+                                        bool ignoreDuplicates /*= true*/) :
     logger(
         boost::log::keywords::severity = Common::Severity::Trace,
         boost::log::keywords::channel = Common::Channel::Resources),
     signalsQueue(signalsQueue),
+    ignoreInvalid(ignoreInvalid),
+    ignoreDuplicates(ignoreDuplicates),
     isRunning(false) {
 }
 

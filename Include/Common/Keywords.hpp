@@ -20,6 +20,8 @@ namespace Core {
         BOOST_PARAMETER_NAME((name, Tags) name)
         BOOST_PARAMETER_NAME((path, Tags) path)
         BOOST_PARAMETER_NAME((signalsQueue, Tags) signalsQueue)
+        BOOST_PARAMETER_NAME((ignoreInvalid, Tags) ignoreInvalid)
+        BOOST_PARAMETER_NAME((ignoreDuplicates, Tags) ignoreDuplicates)
 
     }
 
