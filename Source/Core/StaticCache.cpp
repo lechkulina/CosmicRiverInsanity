@@ -21,12 +21,25 @@ bool Cosmic::Core::StaticCache::isEmpty() const {
 bool Cosmic::Core::StaticCache::insert(AbstractAssetSharedPtr asset) {
     BOOST_LOG_FUNCTION();
 
-    //reject duplicates
+    if (!asset) {
+        BOOST_LOG_SEV(logger, Common::Severity::Error)
+            << "Empty asset was passed to the cache - ignoring it.";
+        return false;
+    }
+
+    //we have to ensure that only valid assets are stored in cache
     const std::string& name = asset->getName();
+    if (!asset->isLoaded()) {
+        BOOST_LOG_SEV(logger, Common::Severity::Debug)
+            << "Asset " << name << " is not loaded - ignoring it.";
+        return false;
+    }
+
+    //reject duplicates
     BOOST_LOG(logger) << "Inserting asset " << name << " into cache.";
     if (assets.find(name) != assets.end()) {
         BOOST_LOG_SEV(logger, Common::Severity::Debug)
-            << "Asset " << name << " has already been inserted.";
+            << "Asset " << name << " has already been inserted - ignoring it.";
         return false;
     }
 
