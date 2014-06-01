@@ -38,7 +38,6 @@ namespace Core {
 
             virtual bool pushRequest(AbstractRequestSharedPtr request);
             virtual bool hasRequests() const;
-
             virtual void start();
             virtual void stop();
 
