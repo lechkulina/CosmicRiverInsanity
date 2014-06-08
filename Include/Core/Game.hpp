@@ -20,10 +20,11 @@
 #include <Core/AudioSubsystem.hpp>
 #include <Core/VideoContext.hpp>
 #include <Core/AsyncLoader.hpp>
-#include <Core/TexturesCache.hpp>
+#include <Core/StaticCache.hpp>
 
 //!!! TEST
 #include <Core/TextureRequest.hpp>
+#include <Core/MusicRequest.hpp>
 #include <Core/Texture.hpp>
 #include <Core/Music.hpp>
 #include <Game/Spacecraft.hpp>
@@ -34,6 +35,7 @@ namespace Cosmic {
 namespace Core {
 
     enum class GameState : int {
+        Initializing,
         Startup,
         Menu,
         Running,
@@ -57,17 +59,15 @@ namespace Core {
             boost::shared_ptr<VideoSubsystem> videoSubsystem;
             boost::shared_ptr<ImageSubsystem> imageSubsystem;
             boost::shared_ptr<AudioSubsystem> audioSubsystem;
-            boost::shared_ptr<VideoContext> videoContext;
-            boost::shared_ptr<AsyncLoader> asyncLoader;
-            boost::shared_ptr<TexturesCache> texturesCache;
+            VideoContextSharedPtr videoContext;
+            AsyncLoaderSharedPtr asyncLoader;
+            StaticCacheSharedPtr assetsCache;
 
             //!!! TEST
-            boost::shared_ptr<Texture> texture;
-            boost::shared_ptr<Music> music;
+            MusicSharedPtr backgroundMusic;
             boost::shared_ptr<Cosmic::Game::Spacecraft> spacecraft;
             //!!! TEST
 
-            void finished(AbstractAssetSharedPtr asset);
             void handleEvent(const SDL_Event& event);
             void updateFrame(float deltaTime);
             void renderFrame();

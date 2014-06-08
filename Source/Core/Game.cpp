@@ -8,6 +8,7 @@
 
 #include <SDL.h>
 #include <cstdlib>
+#include <sstream>
 #include <boost/make_shared.hpp>
 #include <boost/bind.hpp>
 #include <Core/Game.hpp>
@@ -16,7 +17,7 @@ Cosmic::Core::Game::Game() :
     logger(
         boost::log::keywords::severity = Common::Severity::Trace,
         boost::log::keywords::channel = Common::Channel::Game),
-    gameState(GameState::Startup) {
+    gameState(GameState::Initializing) {
     BOOST_LOG_FUNCTION();
 
     //create and initialize logging subsystem
@@ -68,30 +69,20 @@ Cosmic::Core::Game::Game() :
         return;
     }
 
-    //create loader and cache
-    asyncLoader = boost::make_shared<AsyncLoader>(signalsQueue);
+    //create assets cache
+    assetsCache = StaticCache::make();
+
+    //create loader and setup it with cache
+    asyncLoader = AsyncLoader::make(
+        Keywords::signalsQueue = &signalsQueue
+    );
+    asyncLoader->connectToFinished(boost::bind(&StaticCache::insert, assetsCache.get(), _1));
     asyncLoader->start();
-    asyncLoader->connectToFinished(boost::bind(&Game::finished, this, _1));
 
-    //texturesCache = boost::make_shared<TexturesCache>(asyncLoader);
-
-    asyncLoader->pushRequest(TextureRequest::make(videoContext, "player-ship", "./playerShip1_green.png"));
-    asyncLoader->pushRequest(TextureRequest::make(videoContext, "player-ship2", "./playerShip2_red.png"));
-    asyncLoader->pushRequest(TextureRequest::make(videoContext, "player-ship3", "./playerShip3_red.png"));
-    asyncLoader->pushRequest(TextureRequest::make(videoContext, "ufo-green", "./ufoGreen.png"));
-
-    //texturesCache->request(videoContext, "player-ship", "./playerShip1_green.png");
-
-
-    texture = boost::make_shared<Texture>(videoContext, "PLAYER-SHIP", "./playerShip1_green.png");
-    music = boost::make_shared<Music>("./ObservingTheStar.ogg");
-    spacecraft = boost::make_shared<Cosmic::Game::Spacecraft>(texture);
-}
-
-
-void Cosmic::Core::Game::finished(AbstractAssetSharedPtr asset) {
-    BOOST_LOG_FUNCTION();
-    BOOST_LOG(logger) << "FINISHED name=" << asset->getName() << " path=" << asset->getPath() << " isLoaded=" << asset->isLoaded();
+    //!!! TEST
+    asyncLoader->pushRequest(TextureRequest::make(videoContext, "spacecraft-green", "./playerShip1_green.png"));
+    asyncLoader->pushRequest(MusicRequest::make("observing-the-star", "./ObservingTheStar.ogg"));
+    //!!! TEST
 }
 
 Cosmic::Core::Game::~Game() {
@@ -111,9 +102,6 @@ int Cosmic::Core::Game::execute() {
     }
 
     BOOST_LOG(logger) << "Start main loop";
-    gameState = GameState::Running;
-
-    music->play();
 
     const float fps = 60.0f;
     const float deltaTime = (1 / fps) * 1000;
@@ -132,21 +120,52 @@ int Cosmic::Core::Game::execute() {
             continue;
         }
 
-        //avoid spiral of death
-        const float currentTime = SDL_GetTicks();
-        accumulatedTime += currentTime - startTime;
-        if (accumulatedTime > maxAccumulatedTime) {
-            accumulatedTime = maxAccumulatedTime;
-        }
-        startTime = currentTime;
+        switch(gameState) {
+            case GameState::Initializing: {
+                //we are running Initializing state until all pending assets requests are done
+                if (!asyncLoader->hasRequests()) {
+                    BOOST_LOG(logger) << "Initialization finished - changing state to Startup.";
+                    gameState = GameState::Startup;
+                }
+            } break;
 
-        while(accumulatedTime > deltaTime) {
-            updateFrame(deltaTime);
-            accumulatedTime -= deltaTime;
+            case GameState::Startup: {
+                //startup background processes, background music etc - it should be loaded in Initializing state
+                backgroundMusic = assetsCache->fetch<Music>("observing-the-star");
+                if (backgroundMusic) {
+                    BOOST_LOG(logger) << "Starting background music.";
+                    backgroundMusic->play();
+                } else {
+                    BOOST_LOG_SEV(logger, Common::Severity::Debug)
+                        << "Missing background music.";
+                }
+
+                BOOST_LOG(logger) << "Creating testing spacecraft.";
+                spacecraft = boost::make_shared<Cosmic::Game::Spacecraft>(assetsCache);
+
+                BOOST_LOG(logger) << "Startup finished - changing state to Running.";
+                gameState = GameState::Running;
+            } break;
+
+            case GameState::Running: {
+                //avoid spiral of death
+                const float currentTime = SDL_GetTicks();
+                accumulatedTime += currentTime - startTime;
+                if (accumulatedTime > maxAccumulatedTime) {
+                    accumulatedTime = maxAccumulatedTime;
+                }
+                startTime = currentTime;
+
+                while(accumulatedTime > deltaTime) {
+                    updateFrame(deltaTime);
+                    accumulatedTime -= deltaTime;
+                }
+
+                renderFrame();
+                resetFrame();
+            } break;
         }
 
-        renderFrame();
-        resetFrame();
     }
 
     BOOST_LOG(logger) << "Stop main loop";
@@ -198,15 +217,7 @@ void Cosmic::Core::Game::renderFrame() {
     videoContext->setDrawColor();
     videoContext->clear();
 
-    switch(gameState) {
-        case GameState::Running: {
-            spacecraft->render(videoContext);
-        } break;
-
-        default: {
-            //TODO
-        }
-    }
+    spacecraft->render(videoContext);
 
     videoContext->present();
 }
