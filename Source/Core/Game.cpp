@@ -8,7 +8,6 @@
 
 #include <SDL.h>
 #include <cstdlib>
-#include <sstream>
 #include <boost/make_shared.hpp>
 #include <boost/bind.hpp>
 #include <Core/Game.hpp>
@@ -22,7 +21,7 @@ Cosmic::Core::Game::Game() :
 
     //create and initialize logging subsystem
     loggingSubsystem = LoggingSubsystem::make(
-        Keywords::fileName = "game%3N.log",
+        Keywords::path = "game%3N.log",
         Keywords::rotationSize = 20 * 1024 * 1024
     );
     if (!loggingSubsystem->isInitialized()) {

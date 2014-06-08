@@ -55,10 +55,10 @@ namespace Core {
             Common::Logger logger;
             Common::SignalsQueue signalsQueue;
             GameState gameState;
-            boost::shared_ptr<LoggingSubsystem> loggingSubsystem;
-            boost::shared_ptr<VideoSubsystem> videoSubsystem;
-            boost::shared_ptr<ImageSubsystem> imageSubsystem;
-            boost::shared_ptr<AudioSubsystem> audioSubsystem;
+            LoggingSubsystemSharedPtr loggingSubsystem;
+            VideoSubsystemSharedPtr videoSubsystem;
+            ImageSubsystemSharedPtr imageSubsystem;
+            AudioSubsystemSharedPtr audioSubsystem;
             VideoContextSharedPtr videoContext;
             AsyncLoaderSharedPtr asyncLoader;
             StaticCacheSharedPtr assetsCache;

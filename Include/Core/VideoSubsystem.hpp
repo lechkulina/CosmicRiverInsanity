@@ -11,21 +11,20 @@
 
 #include <SDL.h>
 #include <boost/shared_ptr.hpp>
+#include <boost/weak_ptr.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/parameter.hpp>
 #include <Common/Logging.hpp>
+#include <Common/Keywords.hpp>
 #include <Core/AbstractSubsystem.hpp>
 
 namespace Cosmic {
 
 namespace Core {
 
-    namespace Keywords {
-
-        BOOST_PARAMETER_NAME((disableScreenSaver, Tags) disableScreenSaver)
-        BOOST_PARAMETER_NAME((hideCursor, Tags) hideCursor)
-
-    }
+    class VideoSubsystem;
+    typedef boost::shared_ptr<VideoSubsystem> VideoSubsystemSharedPtr;
+    typedef boost::weak_ptr<VideoSubsystem> VideoSubsystemWeakPtr;
 
     class VideoSubsystem : public AbstractSubsystem {
         public:
@@ -35,7 +34,7 @@ namespace Core {
             virtual bool isInitialized() const;
 
             BOOST_PARAMETER_MEMBER_FUNCTION(
-                (boost::shared_ptr<VideoSubsystem>), static make, Keywords::Tags,
+                (VideoSubsystemSharedPtr), static make, Keywords::Tags,
                 (optional
                     (disableScreenSaver, (bool), true)
                     (hideCursor, (bool), true)

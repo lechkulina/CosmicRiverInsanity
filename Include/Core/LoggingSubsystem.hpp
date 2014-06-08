@@ -11,41 +11,40 @@
 
 #include <string>
 #include <boost/shared_ptr.hpp>
+#include <boost/weak_ptr.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/parameter.hpp>
 #include <boost/log/common.hpp>
 #include <boost/log/sinks.hpp>
 #include <Common/Logging.hpp>
+#include <Common/Keywords.hpp>
 #include <Core/AbstractSubsystem.hpp>
 
 namespace Cosmic {
 
 namespace Core {
 
-    namespace Keywords {
-
-        BOOST_PARAMETER_NAME((fileName, Tags) fileName)
-        BOOST_PARAMETER_NAME((rotationSize, Tags) rotationSize)
-
-    }
+    class LoggingSubsystem;
+    typedef boost::shared_ptr<LoggingSubsystem> LoggingSubsystemSharedPtr;
+    typedef boost::weak_ptr<LoggingSubsystem> LoggingSubsystemWeakPtr;
 
     class LoggingSubsystem : public AbstractSubsystem {
         public:
-            LoggingSubsystem(const std::string& fileName, int rotationSize);
+            LoggingSubsystem(const std::string& path, int rotationSize);
             virtual ~LoggingSubsystem();
 
             virtual bool isInitialized() const;
 
             BOOST_PARAMETER_MEMBER_FUNCTION(
-                (boost::shared_ptr<LoggingSubsystem>), static make, Keywords::Tags,
+                (LoggingSubsystemSharedPtr), static make, Keywords::Tags,
                 (required
-                    (fileName, (std::string))
+                    (path, (std::string))
                 )
                 (optional
                     (rotationSize, (int), 5 * 1024 * 1024)
                 )
             ) {
-                return boost::make_shared<LoggingSubsystem>(fileName, rotationSize);
+                return boost::make_shared<LoggingSubsystem>(path, rotationSize);
             }
         private:
             typedef boost::log::core Core;

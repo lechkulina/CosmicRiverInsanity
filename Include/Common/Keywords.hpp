@@ -22,6 +22,16 @@ namespace Core {
         BOOST_PARAMETER_NAME((signalsQueue, Tags) signalsQueue)
         BOOST_PARAMETER_NAME((ignoreInvalid, Tags) ignoreInvalid)
         BOOST_PARAMETER_NAME((ignoreDuplicates, Tags) ignoreDuplicates)
+        BOOST_PARAMETER_NAME((frequency, Tags) frequency)
+        BOOST_PARAMETER_NAME((format, Tags) format)
+        BOOST_PARAMETER_NAME((channels, Tags) channels)
+        BOOST_PARAMETER_NAME((chunkSize, Tags) chunkSize)
+        BOOST_PARAMETER_NAME((rotationSize, Tags) rotationSize)
+        BOOST_PARAMETER_NAME((videoContext, Tags) videoContext)
+        BOOST_PARAMETER_NAME((windowTitle, Tags) windowTitle)
+        BOOST_PARAMETER_NAME((windowGeometry, Tags) windowGeometry)
+        BOOST_PARAMETER_NAME((disableScreenSaver, Tags) disableScreenSaver)
+        BOOST_PARAMETER_NAME((hideCursor, Tags) hideCursor)
 
     }
 

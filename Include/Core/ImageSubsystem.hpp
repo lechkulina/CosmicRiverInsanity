@@ -10,6 +10,7 @@
 #define IMAGESUBSYSTEM_HPP_
 
 #include <boost/shared_ptr.hpp>
+#include <boost/weak_ptr.hpp>
 #include <boost/make_shared.hpp>
 #include <Common/Logging.hpp>
 #include <Core/AbstractSubsystem.hpp>
@@ -18,6 +19,10 @@ namespace Cosmic {
 
 namespace Core {
 
+    class ImageSubsystem;
+    typedef boost::shared_ptr<ImageSubsystem> ImageSubsystemSharedPtr;
+    typedef boost::weak_ptr<ImageSubsystem> ImageSubsystemWeakPtr;
+
     class ImageSubsystem : public AbstractSubsystem {
         public:
             ImageSubsystem();
@@ -25,7 +30,7 @@ namespace Core {
 
             virtual bool isInitialized() const;
 
-            static boost::shared_ptr<ImageSubsystem> make() {
+            static ImageSubsystemSharedPtr make() {
                 return boost::make_shared<ImageSubsystem>();
             }
 

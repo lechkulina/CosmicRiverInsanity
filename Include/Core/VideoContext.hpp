@@ -15,6 +15,7 @@
 #include <boost/make_shared.hpp>
 #include <boost/parameter.hpp>
 #include <Common/Logging.hpp>
+#include <Common/Keywords.hpp>
 #include <Common/Rectangle.hpp>
 #include <Common/Color.hpp>
 #include <Core/AbstractContext.hpp>
@@ -22,14 +23,6 @@
 namespace Cosmic {
 
 namespace Core {
-
-    namespace Keywords {
-
-        BOOST_PARAMETER_NAME((videoContext, Tags) videoContext)
-        BOOST_PARAMETER_NAME((windowTitle, Tags) windowTitle)
-        BOOST_PARAMETER_NAME((windowGeometry, Tags) windowGeometry)
-
-    }
 
     class VideoContext;
     typedef boost::shared_ptr<VideoContext> VideoContextSharedPtr;
@@ -49,7 +42,7 @@ namespace Core {
             operator SDL_Renderer*();
 
             BOOST_PARAMETER_MEMBER_FUNCTION(
-                (boost::shared_ptr<VideoContext>), static make, Keywords::Tags,
+                (VideoContextSharedPtr), static make, Keywords::Tags,
                 (optional
                     (windowTitle, (const std::string&), "")
                     (windowGeometry, (const Common::Rectangle<Sint32>&), Common::Rectangle<Sint32>(

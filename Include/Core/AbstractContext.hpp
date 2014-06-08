@@ -9,9 +9,16 @@
 #ifndef ABSTRACTCONTEXT_HPP_
 #define ABSTRACTCONTEXT_HPP_
 
+#include <boost/shared_ptr.hpp>
+#include <boost/weak_ptr.hpp>
+
 namespace Cosmic {
 
 namespace Core {
+
+    class AbstractContext;
+    typedef boost::shared_ptr<AbstractContext> AbstractContextSharedPtr;
+    typedef boost::weak_ptr<AbstractContext> AbstractContextWeakPtr;
 
     class AbstractContext {
         public:

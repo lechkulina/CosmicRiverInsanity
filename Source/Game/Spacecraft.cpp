@@ -20,7 +20,6 @@ Cosmic::Game::Spacecraft::Spacecraft(Core::AbstractCacheSharedPtr assetsCache) :
     leftEngineThrust(0.0f),
     rightEngineThrust(0.0f) {
     BOOST_LOG_FUNCTION();
-    Core::AbstractAssetSharedPtr a = assetsCache->get("spacecraft-green");
     //fetch assets for this spacecraft
     texture = assetsCache->fetch<Core::Texture>("spacecraft-green");
     if (!texture) {

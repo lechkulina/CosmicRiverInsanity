@@ -9,9 +9,16 @@
 #ifndef ABSTRACTSUBSYSTEM_HPP_
 #define ABSTRACTSUBSYSTEM_HPP_
 
+#include <boost/shared_ptr.hpp>
+#include <boost/weak_ptr.hpp>
+
 namespace Cosmic {
 
 namespace Core {
+
+    class AbstractSubsystem;
+    typedef boost::shared_ptr<AbstractSubsystem> AbstractSubsystemSharedPtr;
+    typedef boost::weak_ptr<AbstractSubsystem> AbstractSubsystemWeakPtr;
 
     class AbstractSubsystem {
         public:

@@ -12,23 +12,20 @@
 #include <SDL.h>
 #include <SDL_mixer.h>
 #include <boost/shared_ptr.hpp>
+#include <boost/weak_ptr.hpp>
 #include <boost/make_shared.hpp>
 #include <boost/parameter.hpp>
 #include <Common/Logging.hpp>
+#include <Common/Keywords.hpp>
 #include <Core/AbstractSubsystem.hpp>
 
 namespace Cosmic {
 
 namespace Core {
 
-    namespace Keywords {
-
-        BOOST_PARAMETER_NAME((frequency, Tags) frequency)
-        BOOST_PARAMETER_NAME((format, Tags) format)
-        BOOST_PARAMETER_NAME((channels, Tags) channels)
-        BOOST_PARAMETER_NAME((chunkSize, Tags) chunkSize)
-
-    }
+    class AudioSubsystem;
+    typedef boost::shared_ptr<AudioSubsystem> AudioSubsystemSharedPtr;
+    typedef boost::weak_ptr<AudioSubsystem> AudioSubsystemWeakPtr;
 
     class AudioSubsystem : public AbstractSubsystem {
         public:
@@ -38,7 +35,7 @@ namespace Core {
             virtual bool isInitialized() const;
 
             BOOST_PARAMETER_MEMBER_FUNCTION(
-                (boost::shared_ptr<AudioSubsystem>), static make, Keywords::Tags,
+                (AudioSubsystemSharedPtr), static make, Keywords::Tags,
                 (optional
                     (frequency, (Sint32), MIX_DEFAULT_FREQUENCY)
                     (format, (Uint16), MIX_DEFAULT_FORMAT)

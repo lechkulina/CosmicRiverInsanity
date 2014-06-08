@@ -12,7 +12,7 @@
 #include <boost/date_time/time.hpp>
 #include <Core/LoggingSubsystem.hpp>
 
-Cosmic::Core::LoggingSubsystem::LoggingSubsystem(const std::string& fileName, int rotationSize) {
+Cosmic::Core::LoggingSubsystem::LoggingSubsystem(const std::string& path, int rotationSize) {
     using namespace boost;
     using namespace boost::log;
 
@@ -24,7 +24,7 @@ Cosmic::Core::LoggingSubsystem::LoggingSubsystem(const std::string& fileName, in
 
     //create sink backend
     shared_ptr<TextFileBackend> backend = make_shared<TextFileBackend>(
-        keywords::file_name = fileName,
+        keywords::file_name = path,
         keywords::rotation_size = rotationSize
     );
 
