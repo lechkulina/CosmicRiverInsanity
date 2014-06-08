@@ -37,7 +37,7 @@ namespace Core {
 
             template<class Asset>
             boost::shared_ptr<Asset> fetch(const std::string& name) {
-                return boost::dynamic_pointer_cast<Asset>(get(name));
+                return boost::static_pointer_cast<Asset>(get(name));
             }
     };
 }

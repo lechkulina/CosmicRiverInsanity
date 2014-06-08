@@ -59,7 +59,7 @@ Cosmic::Core::AbstractAssetSharedPtr
 Cosmic::Core::StaticCache::get(const std::string& name) {
     AssetsIterator asset = assets.find(name);
     if (asset != assets.end()) {
-        *asset;
+        return asset->second;
     }
     return AbstractAssetSharedPtr();
 }
