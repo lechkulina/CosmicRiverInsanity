@@ -36,6 +36,7 @@ namespace Core {
 
     enum class GameState : int {
         Initializing,
+        Loading,
         Startup,
         Menu,
         Running,

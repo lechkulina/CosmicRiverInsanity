@@ -67,21 +67,6 @@ Cosmic::Core::Game::Game() :
             << "Failed to create video context.";
         return;
     }
-
-    //create assets cache
-    assetsCache = StaticCache::make();
-
-    //create loader and setup it with cache
-    asyncLoader = AsyncLoader::make(
-        Keywords::signalsQueue = &signalsQueue
-    );
-    asyncLoader->connectToFinished(boost::bind(&StaticCache::insert, assetsCache.get(), _1));
-    asyncLoader->start();
-
-    //!!! TEST
-    asyncLoader->pushRequest(TextureRequest::make(videoContext, "spacecraft-green", "./playerShip1_green.png"));
-    asyncLoader->pushRequest(MusicRequest::make("observing-the-star", "./ObservingTheStar.ogg"));
-    //!!! TEST
 }
 
 Cosmic::Core::Game::~Game() {
@@ -121,9 +106,27 @@ int Cosmic::Core::Game::execute() {
 
         switch(gameState) {
             case GameState::Initializing: {
-                //we are running Initializing state until all pending assets requests are done
+                //create assets cache, asynchronous loader and push assets requests
+                assetsCache = StaticCache::make();
+                asyncLoader = AsyncLoader::make(
+                    Keywords::signalsQueue = &signalsQueue
+                );
+                asyncLoader->connectToFinished(boost::bind(&StaticCache::insert, assetsCache.get(), _1));
+                asyncLoader->start();
+
+                //!!! TEST
+                asyncLoader->pushRequest(TextureRequest::make(videoContext, "spacecraft-green", "./playerShip1_green.png"));
+                asyncLoader->pushRequest(MusicRequest::make("observing-the-star", "./ObservingTheStar.ogg"));
+                //!!! TEST
+
+                BOOST_LOG(logger) << "Initializing state finished - changing state to Loading.";
+                gameState = GameState::Loading;
+            } break;
+
+            case GameState::Loading: {
+                //we are running Loading state until all pending assets requests are done
                 if (!asyncLoader->hasRequests()) {
-                    BOOST_LOG(logger) << "Initialization finished - changing state to Startup.";
+                    BOOST_LOG(logger) << "Loading state finished - changing state to Startup.";
                     gameState = GameState::Startup;
                 }
             } break;
@@ -142,7 +145,7 @@ int Cosmic::Core::Game::execute() {
                 BOOST_LOG(logger) << "Creating testing spacecraft.";
                 spacecraft = boost::make_shared<Cosmic::Game::Spacecraft>(assetsCache);
 
-                BOOST_LOG(logger) << "Startup finished - changing state to Running.";
+                BOOST_LOG(logger) << "Startup state finished - changing state to Running.";
                 gameState = GameState::Running;
             } break;
 
@@ -162,6 +165,10 @@ int Cosmic::Core::Game::execute() {
 
                 renderFrame();
                 resetFrame();
+            } break;
+
+            case GameState::Shutdown: {
+                BOOST_LOG(logger) << "Running state finished - we are in Shutdown state.";
             } break;
         }
 
