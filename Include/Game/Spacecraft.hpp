@@ -9,8 +9,8 @@
 #ifndef SPACECRAFT_HPP_
 #define SPACECRAFT_HPP_
 
-#include <boost/shared_ptr.hpp>
 #include <Common/Logging.hpp>
+#include <Core/AbstractCache.hpp>
 #include <Core/VideoContext.hpp>
 #include <Core/Texture.hpp>
 #include <Physics/RigidBody.hpp>
@@ -22,20 +22,22 @@ namespace Game {
 
     class Spacecraft {
         public:
-            Spacecraft(boost::shared_ptr<Core::Texture> texture);
+            Spacecraft(Core::AbstractCacheSharedPtr assetsCache);
 
             void setLeftEngineThrust(float thrust);
             void setRightEngineThrust(float thrust);
 
             void update(int deltaTime);
-            void render(boost::shared_ptr<Core::VideoContext> videoContext);
+            void render(Core::VideoContextSharedPtr videoContext);
             void reset();
 
         private:
             Common::Logger logger;
-            boost::shared_ptr<Core::Texture> texture;
+            Core::TextureSharedPtr texture;
             Physics::CircleShape shape;
             Physics::RigidBody body;
+            float leftEngineThrust;
+            float rightEngineThrust;
     };
 
 }
